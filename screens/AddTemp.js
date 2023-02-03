@@ -104,7 +104,7 @@ const AddTemp = () => {
         </View>
         <View className="flex flex-row items-center justify-start w-full">
           <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
-          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' onChangeText={setTemperature} value={temperature} />
+          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' onChangeText={text => setTemperature(text)} value={temperature} />
         </View>
       </View>
 

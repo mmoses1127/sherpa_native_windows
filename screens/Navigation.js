@@ -11,7 +11,10 @@ const Navigation = () => {
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('userType');
+    await AsyncStorage.removeItem('userType')
+    let notoken = await AsyncStorage.getItem('token');
+    console.log('logging out', notoken)
+    .catch(err => console.log(err));
     // await dispatch(sessionActions.logout());
     navigate('/');
   };

@@ -20,6 +20,7 @@
     "react": "^18.0.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-debugger": "^1.1.0",
     "react-native-web": "~0.18.7",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.0",
@@ -27,11 +28,18 @@
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
-    "tailwindcss-react-native": "^1.7.10"
+    "tailwindcss-react-native": "^1.7.10",
+    "expo-sqlite": "~11.0.0",
+    "expo-sharing": "~11.0.1",
+    "expo-file-system": "~15.1.1",
+    "expo-document-picker": "~11.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "tailwindcss": "^3.2.4"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "react-devtools-core": "~4.25.0"
+  }
 }

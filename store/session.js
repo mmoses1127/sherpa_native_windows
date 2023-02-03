@@ -63,22 +63,22 @@ export const restoreSession = () => async dispatch => {
   return res;
 }
 
-export const storeCurrentUser = (user) => {
+export const storeCurrentUser = async (user) => {
   if (user) {
-    AsyncStorage.setItem('currentUser',JSON.stringify(user));
+    await AsyncStorage.setItem('currentUser', JSON.stringify(user));
   } else {
-    AsyncStorage.removeItem("currentUser");
+    await AsyncStorage.removeItem("currentUser");
   }
 };
 
-export const storeCSRFToken = (res) => {
+export const storeCSRFToken = async (res) => {
   const token = res.headers.get('X-CSRF-Token');
-  if (token) AsyncStorage.setItem('X-CSRF-Token', token);
+  if (token) await AsyncStorage.setItem('X-CSRF-Token', token);
 };
 
 export const login = (user) => async (dispatch) => {
   const { email, password } = user;
-  let res = await csrfFetch('http://127.0.0.1:5000/api/session', {
+  let res = await csrfFetch('/api/session', {
     method: 'POST',
     body: JSON.stringify({
       email,
@@ -94,8 +94,18 @@ export const login = (user) => async (dispatch) => {
     return ({error: 'We are unable to log you in. Please try again. If the problem persists, contact an administrator.'})
   }
 }
-let user = AsyncStorage.getItem("currentUser");
-const initialState = { user: user}
+
+
+
+let initialState = {};
+
+const fixUser = async () => {
+  let user = await AsyncStorage.getItem("currentUser");
+  initialState = { 'user': user};
+  console.log(initialState)
+}
+
+fixUser();
 
 const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
