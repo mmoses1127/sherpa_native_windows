@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../store/session";
 import { fetchTemperatureSettings, getTemperatureSettings } from "../store/temperatureSettings";
@@ -8,6 +8,8 @@ import TempItem from "./TempItem";
 import SpeedItem from "./SpeedItem";
 import { Button } from 'react-native';
 import Navigation from "./Navigation";
+import { View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Dashboard = () => {
@@ -17,7 +19,15 @@ const Dashboard = () => {
   const temperatureSettings = useSelector(getTemperatureSettings);
   const speedSettings = useSelector(getSpeedSettings);
   // const userType = useSelector(getCurrentUser).userType;
-  const userType = 'A';
+  const [userType, setUserType] = useState(null);
+
+  useEffect(() => {
+    async () => {
+      console.log('checking user')
+      let type = await AsyncStorage.getItem('userType');
+      setUserType(type);
+    }
+  }, []);
 
   useEffect(() => {
     if (userType === 'A') {
@@ -33,20 +43,17 @@ const Dashboard = () => {
   };
 
   return (
-    <>
+    <View className="flex flex-col justify-center items-center">
       <Navigation />
-      <div className="flex flex-col justify-center items-center min-w-[80%]">
-        
+      <View className="flex flex-col justify-center items-center min-w-[80%]">
         {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
         )}
-
+        
         {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
         )}
-
-      </div>
-      <Button title="Add" onPress={handleAdd} />
-      {/* <button onClick={handleAdd}>Add</button> */}
-    </>
+      </View>
+      <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
+    </View>
   );
 }
 

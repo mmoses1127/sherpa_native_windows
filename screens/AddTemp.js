@@ -3,26 +3,40 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createTemperatureSetting } from "../store/temperatureSettings";
 import { convertFtoC, findUnitCookie } from "./Settings";
-import { Button } from 'react-native';
+import { Button, TextInput, View, Text, Pressable } from 'react-native';
+import { getUnit } from "./Settings";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import formatTime from "./clock" 
 
 
 const AddTemp = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState(new Date('July 1, 1999, 12:00:00'));
+  const [endTime, setEndTime] = useState(new Date('July 1, 1999, 12:00:00'));
+  const [tempUnit, setTempUnit] = useState('');
   const [temperature, setTemperature] = useState('');
-  const unit = findUnitCookie('temp').slice(0,1);
+  // const unit = findUnitCookie('temp').slice(0,1);
+  // const [showPicker1, setShowPicker1] = useState(false);
+  // const [showPicker2, setShowPicker2] = useState(false);
+  const [show, setShow] = useState(false);
+  const [mode, setMode] = useState('start');
+  const userType = 'A';
 
   useEffect(() => {
-    if (unit === 'F') {
+    // setTempUnit(getUnit(userType)[0]);
+    setTempUnit('F');
+  }, []);
+
+  useEffect(() => {
+    if (tempUnit === 'F') {
       if (temperature > 212) setTemperature(212);
     } else {
       if (temperature < 0) setTemperature(0);
       if (temperature > 100) setTemperature(100);
     }
-  }, [temperature, unit]);
+  }, [temperature, tempUnit]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -37,12 +51,12 @@ const AddTemp = () => {
       return;
     }
 
-    if (unit === 'F' && (temperature < 32 || temperature > 212)) {
+    if (tempUnit === 'F' && (temperature < 32 || temperature > 212)) {
       alert('Temperature must be between 32 and 212')
       return;
     }
 
-    if (unit === 'C' && (temperature < 0 || temperature > 100)) {
+    if (tempUnit === 'C' && (temperature < 0 || temperature > 100)) {
       alert('Temperature must be between 0 and 100')
       return;
     }
@@ -50,7 +64,7 @@ const AddTemp = () => {
     const newTemperatureSetting = {
       start_time: startTime,
       end_time: endTime,
-      temperature: unit === 'F' ? convertFtoC(temperature) : temperature
+      temperature: tempUnit === 'F' ? convertFtoC(temperature) : temperature
     }
     const newItem = dispatch(createTemperatureSetting(newTemperatureSetting));
     if (newItem) {
@@ -60,29 +74,46 @@ const AddTemp = () => {
     }
   }
 
-  return (
-    <>
-      <div className="flex flex-row items-center justify-between bg-lightBlue mb-5 min-w-[630px]">
-        <form className="settings-form flex flex-col items-center justify-evenly p-5">
-          <div className="w-full flex flex-row justify-between items-center">
-            <label htmlFor="start-time" className="start-time-setting m-3 w-full text-slate-50">Start</label>
-              <input onChange={e => setStartTime(e.target.value)} className="text-white bg-blue p-3 m-3 w-1/2 min-w-[130px]" type="time" name="start-time" id="start-time" value={startTime} />
-          </div>
-          <div className="w-full flex flex-row justify-between items-center">
-          <label htmlFor="end-time" className="end-time-setting m-3 w-full">End</label>
-            <input onChange={e => setEndTime(e.target.value)} className="bg-blue p-3 m-3 w-1/2 min-w-[130px]" type="time" name="end-time" id="end-time" value={endTime} />
-          </div>
-          <div className="w-full flex flex-row justify-between items-center">
-          <label htmlFor="temp" className="temp-setting m-3 w-full">Temperature ({unit})</label>
-            <input onChange={e => setTemperature(e.target.value)}className="bg-blue p-3 m-3 w-1/2 min-w-[130px]" min={unit === 'F' ? '32' : '0'} max={unit === 'F' ? '212' : '100'} type="number" step="0.1" name="temp" id="temp" value={temperature} />
+  const showClock = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
 
-          </div>
-        </form>
-        <div className="clock-zone"></div>
-      </div>
-      {/* <button onClick={handleSave}>Save</button> */}
-      <Button title="Save" onPress={handleSave} />
-    </>
+  const handleClockChange = (event, selectedTime) => {
+    const currentTime = selectedTime || startTime;
+    setShow(Platform.OS === 'ios');
+    mode === 'start' ? setStartTime(currentTime) : setEndTime(currentTime);
+  };
+
+
+  return (
+
+    <View className="flex flex-col justify-center items-center">
+      <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
+        <View className="flex flex-row items-center justify-start w-full">
+          <Text className="min-w-[120px]">Start</Text>
+          <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
+            <Text className="text-white">{formatTime(startTime)}</Text>
+          </Pressable>
+        </View>
+        <View className="flex flex-row items-center text-white justify-start w-full">
+          <Text className="min-w-[120px]">End</Text>
+          <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
+            <Text className="text-white">{formatTime(endTime)}</Text>
+          </Pressable>
+        </View>
+        <View className="flex flex-row items-center justify-start w-full">
+          <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
+          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' onChangeText={setTemperature} value={temperature} />
+        </View>
+      </View>
+
+      <Button  title="Save" onPress={handleSave} />
+      {show && 
+      <DateTimePicker testID="dateTimePicker" value={startTime} mode={'time'}
+      is24Hour={false} display="default" onChange={handleClockChange} />
+      }
+    </View>
   );
 
 }

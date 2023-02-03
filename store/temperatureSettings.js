@@ -71,7 +71,7 @@ export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch
 };
 
 export const createTemperatureSetting = (temperatureSetting) => async dispatch => {
-  const res = await csrfFetch(`http://172.27.164.81:3000/api/temperature_settings`, {
+  const res = await csrfFetch(`/api/temperature_settings`, {
     method: 'POST',
     body: JSON.stringify(temperatureSetting)
   });

@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 const csrfFetch = async (url, options = {}) => {
   // set options.method to 'GET' if there is no method
   options.method = options.method || 'GET';
@@ -8,7 +11,7 @@ const csrfFetch = async (url, options = {}) => {
   if (options.method.toUpperCase() !== 'GET') {
     options.headers['Content-Type'] =
       options.headers['Content-Type'] || 'application/json';
-    options.headers['X-CSRF-TOKEN'] = sessionStorage.getItem('X-CSRF-Token');
+    options.headers['X-CSRF-TOKEN'] = AsyncStorage.getItem('X-CSRF-Token');
   }
 
   // call the default window's fetch with the url and the options passed in
@@ -29,7 +32,7 @@ export async function restoreCSRF() {
 
 export const storeCSRFToken = (response) => {
   const csrfToken = response.headers.get('X-CSRF-Token');
-  if (csrfToken) sessionStorage.setItem('X-CSRF-Token', csrfToken);
+  if (csrfToken) AsyncStorage.setItem('X-CSRF-Token', csrfToken);
 }
 
 export default csrfFetch;

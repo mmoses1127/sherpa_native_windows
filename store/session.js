@@ -1,4 +1,3 @@
-// import { AsyncStorage } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import csrfFetch from './csrf.js';
 
@@ -79,7 +78,7 @@ export const storeCSRFToken = (res) => {
 
 export const login = (user) => async (dispatch) => {
   const { email, password } = user;
-  let res = await csrfFetch('/api/session', {
+  let res = await csrfFetch('http://127.0.0.1:5000/api/session', {
     method: 'POST',
     body: JSON.stringify({
       email,
