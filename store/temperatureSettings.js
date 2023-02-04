@@ -1,11 +1,14 @@
 import csrfFetch from './csrf.js';
 import * as SQLite from 'expo-sqlite';
 
+const db = SQLite.openDatabase('example.db');
+
 export const ADD_TEMPERATURE_SETTINGS = `ADD_TEMPERATURE_SETTINGS`;
 export const ADD_TEMPERATURE_SETTING = `ADD_TEMPERATURE_SETTING`;
 export const REMOVE_TEMPERATURE_SETTING = `REMOVE_TEMPERATURE_SETTING`;
 
 const addTemperatureSettings = (temperatureSettings) => {
+  console.log('adding temperature setting fo real', temperatureSettings)
   return ({
     type: ADD_TEMPERATURE_SETTINGS,
     temperatureSettings
@@ -61,37 +64,49 @@ export const getTemperatureSetting = temperatureSettingId => (state) => {
 //   });
 // };
 
-export const sqlFetchTemperatureSettings = () => async dispatch => {
-  const db = await SQLite.openDatabase('example.db');
+// export const sqlFetchTemperatureSettings = () => async dispatch => {
+//   const db = await SQLite.openDatabase('example.db');
+//   db.transaction(tx => {
+//     tx.executeSql(
+//       `select * from temperature_settings`,
+//       null,
+//       (txtObj, resultSet) => {
+//         if (resultSet.rows._array.length) {
+//           dispatch(addTemperatureSettings(resultSet.rows._array))
+//         } else {
+//           console.log('no temperature settings found')
+//         }
+//       },
+//       (txtObj, error) => console.log('error', error)
+//     );
+//   });
+  
+
+//   if (res.ok) {
+//     const temperatureSettings = await res.json();
+//     dispatch(addTemperatureSettings(temperatureSettings))
+//   };
+// };
+
+export const fetchTemperatureSettings = () => async dispatch => {
+  console.log('fetching temperature settings')
   db.transaction(tx => {
     tx.executeSql(
       `select * from temperature_settings`,
       null,
       (txtObj, resultSet) => {
         if (resultSet.rows._array.length) {
-          dispatch(addTemperatureSettings(resultSet.rows._array))
+          console.log('resultSet', resultSet.rows._array);
+          dispatch(addTemperatureSettings(resultSet.rows._array));
         } else {
           console.log('no temperature settings found')
         }
       },
-      (txtObj, error) => console.log('error', error)
+      (txtObj, error) => {
+        console.log('error', error);
+      }
     );
   });
-  
-
-  if (res.ok) {
-    const temperatureSettings = await res.json();
-    dispatch(addTemperatureSettings(temperatureSettings))
-  };
-};
-
-export const fetchTemperatureSettings = () => async dispatch => {
-  const res = await fetch(`/api/temperature_settings`);
-
-  if (res.ok) {
-    const temperatureSettings = await res.json();
-    dispatch(addTemperatureSettings(temperatureSettings))
-  };
 };
 
 export const fetchTemperatureSetting = (temperatureSettingId) => async dispatch => {
@@ -135,7 +150,6 @@ export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch
 };
 
 export const sqlCreateTemperatureSetting = (temperatureSetting) => async dispatch => {
-  const db = SQLite.openDatabase('example.db');
 
   db.transaction(tx => { 
     tx.executeSql('INSERT INTO temperature_settings (start_time, end_time, temperature) values (?, ?, ?)', 

@@ -18,7 +18,7 @@ const Login = () => {
   const [errors, setErrors] = useState([]);
 
   const handleLogin = () => {
-    dispatch(sessionActions.sqlLog({email, password}));
+    dispatch(sessionActions.sqlLogin({email, password}));
   }
 
   return (

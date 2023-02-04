@@ -19,41 +19,16 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const temperatureSettings = useSelector(getTemperatureSettings);
   const speedSettings = useSelector(getSpeedSettings);
-  // const userType = useSelector(getCurrentUser).userType;
-  const [userType, setUserType] = useState('A');
-  console.log('hello from dashboard')
-  const [temperatureSettings, setTemperatureSettings] = useState([]);
-
-  // useEffect(() => {
-  //   async () => {
-  //     console.log('checking user')
-  //     let type = await AsyncStorage.getItem('userType');
-  //     setUserType(type);
-  //   }
-  // }, []);
+  const userType = useSelector(getCurrentUser).user_type;
+  const temperatureSettings = useSelector(getTemperatureSettings);
+  // const [temperatureSettings, setTemperatureSettings] = useState([]);
 
   useEffect(() => {
     
   if (userType === 'A') {
-    db.transaction(tx => {
-      tx.executeSql(
-        `select * from temperature_settings`,
-        null,
-        (txtObj, resultSet) => {
-          if (resultSet.rows._array.length) {
-            console.log('resultSet', resultSet.rows._array);
-            setTemperatureSettings(resultSet.rows._array);
-          }
-        },
-        (txtObj, error) => {
-          console.log('error', error);
-        }
-      );
-    });
-    // let temps = dispatch(sqlFetchTemperatureSettings());
-    // console.log('temps', temps);
+    
+    dispatch(fetchTemperatureSettings());
     } else {
       // dispatch(fetchSpeedSettings());
     }

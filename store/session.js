@@ -32,7 +32,7 @@ export const getCurrentUser = (state = {}) => {
 //   dispatch(addCurrentUser(data));
 // };
 
-export const sqlLog = (user) => async (dispatch) => {
+export const sqlLogin = (user) => async (dispatch) => {
   const { email, password } = user;
 
   db.transaction(tx => {
@@ -47,18 +47,12 @@ export const sqlLog = (user) => async (dispatch) => {
             dispatch(addCurrentUser(targetUser));
           } else {
             console.log('incorrect email or password')
-            // dispatch(sqlLogout(dispatch));
           }
         },
         (txObj, error) => console.log(error)
       );
     });
   };
-
-export const sqlLogout = () => async dispatch => {
-  storeCurrentUser(null);
-  dispatch(removeCurrentUser());
-};
 
 export const logout = () => async dispatch => {
   storeCurrentUser(null);
