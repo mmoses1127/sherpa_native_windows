@@ -55,7 +55,11 @@ export const fetchTemperatureSettings = () => async dispatch => {
       (txtObj, resultSet) => {
         if (resultSet.rows._array.length) {
           console.log('resultSet', resultSet.rows._array);
-          dispatch(addTemperatureSettings(resultSet.rows._array));
+          let stateSlice = {};
+          resultSet.rows._array.forEach(temperatureSetting => {
+            stateSlice[temperatureSetting.id] = temperatureSetting;
+          });
+          dispatch(addTemperatureSettings(stateSlice));
         } else {
           console.log('no temperature settings found')
         }
@@ -99,18 +103,21 @@ export const sqlDeleteTemperatureSetting = (db, temperatureSettingId) => {
       },
       (txtObj, error) => console.log('error', error)
     );
-  }
-  );
+  });
 }
 
 export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch => {
-  const res = await csrfFetch(`/api/temperature_settings/${temperatureSettingId}`, {
-    method: 'DELETE'
+  db.transaction(tx => {
+    tx.executeSql(
+      `delete from temperature_settings where id = ?`,
+      [temperatureSettingId],
+      (txtObj, resultSet) => {
+          dispatch(removeTemperatureSetting(temperatureSettingId))
+          console.log('deleted temperature setting number ', temperatureSettingId)
+      },
+      (txtObj, error) => console.log('error', error)
+    );
   });
-
-  if (res.ok) {
-    dispatch(removeTemperatureSetting(temperatureSettingId))
-  };
 };
 
 export const createTemperatureSetting = (temperatureSetting) => async dispatch => {
@@ -147,19 +154,19 @@ export const updateTemperatureSetting = (temperatureSetting) => async dispatch =
 const temperatureSettingsReducer = (state = {}, action) => {
   switch (action.type) {
     case ADD_TEMPERATURE_SETTINGS:
-      console.log('ADDING TEMP')
       return action.temperatureSettings;
     case ADD_TEMPERATURE_SETTING:
       return {...state, [action.temperatureSetting.id]: action.temperatureSetting};
     case REMOVE_TEMPERATURE_SETTING:
-      console.log('REMOVING TEMP')
       let newState = {...state};
-      delete newState[action.temperatureSettingId]  ;
+      delete newState[action.temperatureSettingId];
+      console.log('new state', newState)
       return newState;
     default:
       return state;
   }
 }
+
 
 
 export default temperatureSettingsReducer;

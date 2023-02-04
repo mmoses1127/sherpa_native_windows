@@ -7,38 +7,15 @@ import * as SQLite from 'expo-sqlite';
 
 
 const TempItem = ({temperatureSetting}) => {
-  
-  const db = SQLite.openDatabase('example.db');
-  
+    
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const unit = 'F';
   const temp = unit === 'F' ? convertCtoF(temperatureSetting.temperature) : temperatureSetting.temperature;
 
-  const sqlDeleteTemperatureSetting = (db, temperatureSettingId) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        `delete from temperature_settings where id = ?`,
-        [temperatureSettingId],
-        (txtObj, resultSet) => {
-          if (resultSet.rows._array.length) {
-            // dispatch(removeTemperatureSetting(temperatureSettingId))
-            console.log('deleted temperature setting number ', temperatureSettingId)
-          } else {
-            console.log('no temperature setting found')
-          }
-        },
-        (txtObj, error) => console.log('error', error)
-      );
-    }
-    );
-  }
-
   const handleDelete = (e) => {
     e.preventDefault();
-    sqlDeleteTemperatureSetting(db, temperatureSetting.id);
-    // dispatch(deleteTemperatureSetting(temperatureSetting.id))
-    alert('Deleted')
+    dispatch(deleteTemperatureSetting(temperatureSetting.id));
   };
 
   const handleUpdate = (e) => {
