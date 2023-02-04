@@ -56,22 +56,13 @@ export const sqlLog = (user) => async (dispatch) => {
   };
 
 export const sqlLogout = () => async dispatch => {
-
   storeCurrentUser(null);
   dispatch(removeCurrentUser());
-
 };
 
 export const logout = () => async dispatch => {
-  const res = await csrfFetch(`/api/session`, {
-    method: 'DELETE'
-  });
-
-  if (res.ok) {
-    storeCurrentUser(null);
-    dispatch(removeCurrentUser());
-    return res;
-  }
+  storeCurrentUser(null);
+  dispatch(removeCurrentUser());;
 }
 
 export const addCurrentUser = (user) => {

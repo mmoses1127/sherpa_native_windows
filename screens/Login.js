@@ -17,80 +17,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
 
-  const logUserIn = () => {
+  const handleLogin = () => {
     dispatch(sessionActions.sqlLog({email, password}));
-
-  
-  }
-
-
-  // const sqlLogin = async (e) => {
-
-  //   db.transaction(tx => {
-  //     console.log('attempting login as', email, password)
-  //     tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?', [email, password],
-  //       (txObj, resultSet) => {
-  //         console.log(resultSet.rows._array)
-  //         // setUsers(resultSet.rows._array)
-  //         if (resultSet.rows._array.length) {
-  //           completeLogin(email, password);
-  //         } else {
-  //           console.log('incorrect email or password')
-  //           setErrors(['Incorrect email or password'])
-  //           dispatch(sessionActions.sqlLogout(dispatch));
-  //         }
-  //       },
-  //       (txObj, error) => console.log(error)
-  //     );
-  //   });
-
-  //   e.preventDefault();
-  //   db.transaction(tx => {
-  //     console.log('logging in with', email, password)
-  //     tx.executeSql('SELECT * FROM users', null,
-  //       (txObj, resultSet) => {
-  //         console.log('result set', resultSet.rows._array)
-  //         if (resultSet.rows._array.length) {
-  //           completeLogin(email, password);
-  //         } else {
-  //           console.log('incorrect email or password')
-  //           setErrors(['Incorrect email or password'])
-  //           sessionActions.storeCurrentUser(null);
-  //           dispatch(sessionActions.sqlLogout(dispatch));
-  //         }
-  //       },
-  //       (txObj, error) => console.log(error)
-  //     );
-  //   });
-  // };
-
-  const completeLogin = async (email, password) => {
-    // await AsyncStorage.setItem('userType', email[0].toUpperCase());
-    // let token = await AsyncStorage.getItem('userType');
-    // console.log('login token is', token)
-    dispatch(sessionActions.addCurrentUser({id: 'notSet', email, password, userType: 'notSet'}));
-    navigate('/dashboard');
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    await AsyncStorage.setItem('userType', email[0].toUpperCase());
-    let token = await AsyncStorage.getItem('userType');
-    console.log('login token is', token)
-    // await dispatch(sessionActions.login({email, password}))
-    // .catch(async (res) => {
-    //   let data;
-    //   try {
-    //     // .clone() essentially allows you to read the response body twice
-    //     data = await res.clone().json();
-    //   } catch {
-    //     data = await res.text(); // Will hit this case if the server is down
-    //   }
-    //   if (data?.errors) setErrors(data.errors);
-    //   else if (data) setErrors([data]);
-    //   else setErrors([res.statusText]);
-    // });
-    // navigate('/dashboard');
   }
 
   return (
@@ -107,7 +35,7 @@ const Login = () => {
         <TextInput onChangeText={text => setEmail(text)} className="w-full h-10 m-2 bg-cyan-200 autofill:bg-cyan-200" />
         <Text className="text-md text-left w-full">Password</Text>
         <TextInput onChangeText={text => setPassword(text)} className="w-full h-10 m-2 bg-cyan-200 autofill:bg-cyan-200" />
-        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Login" onPress={logUserIn} />
+        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Login" onPress={handleLogin} />
       </View>
     </View>
   )

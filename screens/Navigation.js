@@ -1,4 +1,4 @@
-import * as sessionActions from '../store/session';
+import { logout } from '../store/session';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-native';
 import { Button } from 'react-native';
@@ -13,21 +13,15 @@ const Navigation = () => {
   const state = useSelector(state => state);
   console.log('state', state)
 
-  const sqlLogout = () => {
-    console.log('inside sqlLogout')
-    // storeCurrentUser(null);
-    dispatch(sessionActions.removeCurrentUser());
-  };
+  // const sqlLogout = () => {
+  //   console.log('inside sqlLogout')
+  //   // storeCurrentUser(null);
+  //   dispatch(sessionActions.removeCurrentUser());
+  // };
 
   const handleLogout = async () => {
-    console.log('logging out', notoken)
-    await AsyncStorage.removeItem('userType');
-    let notoken = await AsyncStorage.getItem('token');
-    // .catch(err => console.log(err));
-    // await dispatch(sessionActions.logout());
-    await dispatch(sqlLogout());
-    navigate('/');
-    
+    await dispatch(logout());
+    navigate('/'); 
   };
 
 
