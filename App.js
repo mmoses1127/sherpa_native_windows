@@ -20,7 +20,10 @@ const App = () => {
   const db = SQLite.openDatabase('example.db');
   console.log('db in app is', db)
   const [isLoading, setIsLoading] = useState(true);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
+  const user = useSelector(getCurrentUser);
+  const state = useSelector(state => state);
+  console.log(state)
 
   const exportDB = async () => {
     await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
@@ -89,7 +92,7 @@ const App = () => {
       tx.executeSql('SELECT * FROM users', null,
         (txObj, resultSet) => {
           console.log(resultSet.rows._array)
-          setUsers(resultSet.rows._array)
+          // setUsers(resultSet.rows._array)
         },
         (txObj, error) => console.log(error)
       );
@@ -108,30 +111,7 @@ const App = () => {
   //   })
   // }
 
-
-  // const [userType, setUserType] = useState('A');
-  const userType = useSelector(getCurrentUser);
-  console.log(userType)
-
-  const loggedIn = async () => {
-    console.log('checking user')
-    let token = await AsyncStorage.getItem('userType');
-    console.log('token is', token)
-    if (token.length) {
-      return token;
-    } else {
-      return false;
-    }
-  }
-
-  // useEffect(() => {
-  //   async () => {
-  //     console.log('usertype', userType)
-  //     const type = await loggedIn();
-  //     setUserType(type);
-  //   }
-  // }, []);
-
+  console.log(user)
 
   return (
     <NativeRouter>
@@ -139,12 +119,12 @@ const App = () => {
         <Button title="Export DB" onPress={exportDB} />
         <Button title="Import DB" onPress={importDb} />
         <Routes>
-          <Route exact path="/" element={userType ? <Dashboard /> : <Login />} />
-          <Route exact path="/dashboard" element={userType ? <Dashboard /> : <Login />} />
-          <Route exact path="/add-setting" element={userType ? <AddSetting db={db}/> : <Login />} />
+          <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
+          <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
+          <Route exact path="/add-setting" element={user ? <AddSetting db={db}/> : <Login />} />
           {/* <Route exact path="/temps/:tempItemId" element={0 ? <Login /> : <EditTemp />} /> */}
           {/* <Route exact path="/speeds/:speedItemId" element={0 ? <Login /> : <EditSpeed />} /> */}
-          <Route exact path="/settings" element={userType ? <Settings /> : <Login />} />
+          <Route exact path="/settings" element={user ? <Settings /> : <Login />} />
         </Routes>
       </View>
     </NativeRouter>

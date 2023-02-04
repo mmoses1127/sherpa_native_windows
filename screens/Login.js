@@ -13,18 +13,18 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('1');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
 
   const sqlLogin = async (e) => {
 
     db.transaction(tx => {
-      console.log('selecting users...')
-      tx.executeSql('SELECT * FROM users', null,
+      console.log('attempting login as', email, password)
+      tx.executeSql('SELECT * FROM users WHERE email = ? AND password', null,
         (txObj, resultSet) => {
           console.log(resultSet.rows._array)
-          setUsers(resultSet.rows._array)
+          // setUsers(resultSet.rows._array)
         },
         (txObj, error) => console.log(error)
       );
