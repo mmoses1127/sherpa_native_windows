@@ -41,52 +41,10 @@ export const getTemperatureSettings = (state) => {
   })
 };
 
-
 export const getTemperatureSetting = temperatureSettingId => (state) => {
   if (!state.temperatureSettings) return null;
   return state.temperatureSettings[temperatureSettingId];
 }
-
-// export const sqlFetchTemperatureSettings = (db) => {
-//   db.transaction(tx => {
-//     tx.executeSql(
-//       `select * from temperature_settings`,
-//       null,
-//       (txtObj, resultSet) => {
-//         if (resultSet.rows._array.length) {
-//           dispatch(addTemperatureSettings(resultSet.rows._array))
-//         } else {
-//           console.log('no temperature settings found')
-//         }
-//       },
-//       (txtObj, error) => console.log('error', error)
-//     );
-//   });
-// };
-
-// export const sqlFetchTemperatureSettings = () => async dispatch => {
-//   const db = await SQLite.openDatabase('example.db');
-//   db.transaction(tx => {
-//     tx.executeSql(
-//       `select * from temperature_settings`,
-//       null,
-//       (txtObj, resultSet) => {
-//         if (resultSet.rows._array.length) {
-//           dispatch(addTemperatureSettings(resultSet.rows._array))
-//         } else {
-//           console.log('no temperature settings found')
-//         }
-//       },
-//       (txtObj, error) => console.log('error', error)
-//     );
-//   });
-  
-
-//   if (res.ok) {
-//     const temperatureSettings = await res.json();
-//     dispatch(addTemperatureSettings(temperatureSettings))
-//   };
-// };
 
 export const fetchTemperatureSettings = () => async dispatch => {
   console.log('fetching temperature settings')
@@ -110,15 +68,21 @@ export const fetchTemperatureSettings = () => async dispatch => {
 };
 
 export const fetchTemperatureSetting = (temperatureSettingId) => async dispatch => {
-  const res = await csrfFetch(`/api/temperature_settings/${temperatureSettingId}`);
-
-  if (res.ok) {
-    const temperatureSetting = await res.json();
-    dispatch(addTemperatureSetting(temperatureSetting))
-  };
+  db.transaction(tx => {
+    tx.executeSql(
+      `select * from temperature_settings where id = ?`,
+      [temperatureSettingId],
+      (txtObj, resultSet) => {
+        if (resultSet.rows._array.length) {
+          dispatch(addTemperatureSetting(resultSet.rows._array[0]))
+        } else {
+          console.log('no temperature setting found')
+        }
+      },
+      (txtObj, error) => console.log('error', error)
+    );
+  });
 };
-
-export const yoooo = () => 5;
 
 export const sqlDeleteTemperatureSetting = (db, temperatureSettingId) => {
   db.transaction(tx => {
@@ -149,13 +113,11 @@ export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch
   };
 };
 
-export const sqlCreateTemperatureSetting = (temperatureSetting) => async dispatch => {
-
+export const createTemperatureSetting = (temperatureSetting) => async dispatch => {
   db.transaction(tx => { 
     tx.executeSql('INSERT INTO temperature_settings (start_time, end_time, temperature) values (?, ?, ?)', 
     [temperatureSetting.start_time, temperatureSetting.end_time, temperatureSetting.temperature],
     (txObj, resultSet) => {
-      console.log('resultobject', {...temperatureSetting, id: resultSet.insertId});
       dispatch(addTemperatureSetting({...temperatureSetting, id: resultSet.insertId}))
     },
     (txObj, error) => {
@@ -163,35 +125,6 @@ export const sqlCreateTemperatureSetting = (temperatureSetting) => async dispatc
     }
     );
   });
-
-  db.transaction(tx => {
-    console.log('selecting temp items...')
-    tx.executeSql('SELECT * FROM temperature_settings', null,
-      (txObj, resultSet) => {
-        console.log(resultSet.rows._array)
-      },
-      (txObj, error) => console.log(error)
-    );
-  });
-
-}
-
-
-export const createTemperatureSetting = (temperatureSetting) => async dispatch => {
-  const res = await csrfFetch(`/api/temperature_settings`, {
-    method: 'POST',
-    body: JSON.stringify(temperatureSetting)
-  });
-
-  if (res.ok) {
-    const newTemperatureSetting = await res.json();
-    dispatch(addTemperatureSetting(newTemperatureSetting));
-    return newTemperatureSetting;
-  } else {
-    const errors = await res.json();
-    alert(errors);
-    return null;
-  }
 };
 
 export const updateTemperatureSetting = (temperatureSetting) => async dispatch => {

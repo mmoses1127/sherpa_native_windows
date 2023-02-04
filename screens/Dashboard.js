@@ -20,7 +20,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const speedSettings = useSelector(getSpeedSettings);
-  const userType = useSelector(getCurrentUser).user_type;
+  // const userType = useSelector(getCurrentUser).user_type;
+  const userType = 'A'
   const temperatureSettings = useSelector(getTemperatureSettings);
   // const [temperatureSettings, setTemperatureSettings] = useState([]);
 

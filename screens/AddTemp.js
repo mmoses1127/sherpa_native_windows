@@ -12,9 +12,6 @@ import * as SQLite from 'expo-sqlite';
 
 const AddTemp = () => {
 
-  // const db = SQLite.openDatabase('example.db');
-
-  console.log('db in addtemp is', db)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [startTime, setStartTime] = useState(new Date('July 1, 1999, 12:00:00'));
@@ -69,44 +66,8 @@ const AddTemp = () => {
       temperature: tempUnit === 'F' ? convertFtoC(temperature) : temperature
     }
 
-    dispatch(sqlCreateTemperatureSetting(newTemperatureSetting));
+    dispatch(createTemperatureSetting(newTemperatureSetting));
     navigate('/')
-
-    // dispatch a transaction to insert to db
-
-    // db.transaction(tx => { 
-    //   tx.executeSql('INSERT INTO temperature_settings (start_time, end_time, temperature) values (?, ?, ?)', 
-    //   [newTemperatureSetting.start_time, newTemperatureSetting.end_time, newTemperatureSetting.temperature],
-    //   (txObj, resultSet) => {
-    //     console.log('resultobject', {...newTemperatureSetting, id: resultSet.insertId});
-    //     // dispatch(addTemperatureSetting({...newTemperatureSetting, id: resultSet.insertId}))
-    //   },
-    //   (txObj, error) => {
-    //     console.log('Error', error);
-    //   }
-    //   );
-    // });
-
-    // db.transaction(tx => {
-    //   console.log('selecting temp items...')
-    //   tx.executeSql('SELECT * FROM temperature_settings', null,
-    //     (txObj, resultSet) => {
-    //       console.log('all temps', resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
-
-
-    // dispatch action to add to state
-
-
-    // const newItem = dispatch(createTemperatureSetting(newTemperatureSetting));
-    // if (newItem) {
-    //   navigate('/');
-    // } else {
-    //   alert('Item could not be created')
-    // }
   }
 
   const showClock = (currentMode) => {

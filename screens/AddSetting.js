@@ -6,7 +6,8 @@ import AddSpeed from "./AddSpeed";
 
 const AddSetting = () => {
 
-  const userType = useSelector(getCurrentUser).user_type;
+  // const userType = useSelector(getCurrentUser).user_type;
+  const userType = 'A';
 
   if (userType ==='A') {
     return <AddTemp/>

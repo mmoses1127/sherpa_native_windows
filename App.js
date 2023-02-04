@@ -21,7 +21,8 @@ const App = () => {
   console.log('db in app is', db)
   const [isLoading, setIsLoading] = useState(true);
   // const [users, setUsers] = useState([]);
-  const user = useSelector(getCurrentUser);
+  // const user = useSelector(getCurrentUser);
+  const user = 'A';
   const state = useSelector(state => state);
   console.log(state)
 
