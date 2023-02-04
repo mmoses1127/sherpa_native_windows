@@ -38,12 +38,31 @@ export const getTemperatureSettings = (state) => {
   })
 };
 
+
 export const getTemperatureSetting = temperatureSettingId => (state) => {
   if (!state.temperatureSettings) return null;
   return state.temperatureSettings[temperatureSettingId];
 }
 
-export const sqlFetchTemperatureSettings = (db) => {
+// export const sqlFetchTemperatureSettings = (db) => {
+//   db.transaction(tx => {
+//     tx.executeSql(
+//       `select * from temperature_settings`,
+//       null,
+//       (txtObj, resultSet) => {
+//         if (resultSet.rows._array.length) {
+//           dispatch(addTemperatureSettings(resultSet.rows._array))
+//         } else {
+//           console.log('no temperature settings found')
+//         }
+//       },
+//       (txtObj, error) => console.log('error', error)
+//     );
+//   });
+// };
+
+export const sqlFetchTemperatureSettings = () => async dispatch => {
+  const db = await SQLite.openDatabase('example.db');
   db.transaction(tx => {
     tx.executeSql(
       `select * from temperature_settings`,
@@ -58,6 +77,12 @@ export const sqlFetchTemperatureSettings = (db) => {
       (txtObj, error) => console.log('error', error)
     );
   });
+  
+
+  if (res.ok) {
+    const temperatureSettings = await res.json();
+    dispatch(addTemperatureSettings(temperatureSettings))
+  };
 };
 
 export const fetchTemperatureSettings = () => async dispatch => {
@@ -77,6 +102,27 @@ export const fetchTemperatureSetting = (temperatureSettingId) => async dispatch 
     dispatch(addTemperatureSetting(temperatureSetting))
   };
 };
+
+export const yoooo = () => 5;
+
+export const sqlDeleteTemperatureSetting = (db, temperatureSettingId) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      `delete from temperature_settings where id = ?`,
+      [temperatureSettingId],
+      (txtObj, resultSet) => {
+        if (resultSet.rows._array.length) {
+          // dispatch(removeTemperatureSetting(temperatureSettingId))
+          console.log('deleted temperature setting number ', temperatureSettingId)
+        } else {
+          console.log('no temperature setting found')
+        }
+      },
+      (txtObj, error) => console.log('error', error)
+    );
+  }
+  );
+}
 
 export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch => {
   const res = await csrfFetch(`/api/temperature_settings/${temperatureSettingId}`, {
@@ -154,10 +200,12 @@ export const updateTemperatureSetting = (temperatureSetting) => async dispatch =
 const temperatureSettingsReducer = (state = {}, action) => {
   switch (action.type) {
     case ADD_TEMPERATURE_SETTINGS:
+      console.log('ADDING TEMP')
       return action.temperatureSettings;
     case ADD_TEMPERATURE_SETTING:
       return {...state, [action.temperatureSetting.id]: action.temperatureSetting};
     case REMOVE_TEMPERATURE_SETTING:
+      console.log('REMOVING TEMP')
       let newState = {...state};
       delete newState[action.temperatureSettingId]  ;
       return newState;

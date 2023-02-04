@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SQLite from 'expo-sqlite';
 
-const Login = ({db}) => {
+const Login = () => {
+
+  const db = SQLite.openDatabase('example.db');
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -16,23 +18,36 @@ const Login = ({db}) => {
   const [errors, setErrors] = useState([]);
 
   const sqlLogin = async (e) => {
-    e.preventDefault();
+
     db.transaction(tx => {
-      console.log('selecting names')
-      tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?;', [email, password],
+      console.log('selecting users...')
+      tx.executeSql('SELECT * FROM users', null,
         (txObj, resultSet) => {
-          console.log('result set', resultSet.rows._array)
-          if (resultSet.rows._array.length) {
-            completeLogin(email, password);
-          } else {
-            setErrors(['Incorrect email or password'])
-            sessionActions.storeCurrentUser(null);
-            dispatch(sessionActions.sqlLogout(dispatch));
-          }
+          console.log(resultSet.rows._array)
+          setUsers(resultSet.rows._array)
         },
         (txObj, error) => console.log(error)
       );
     });
+
+    // e.preventDefault();
+    // db.transaction(tx => {
+    //   console.log('logging in with', email, password)
+    //   tx.executeSql('SELECT * FROM users', null,
+    //     (txObj, resultSet) => {
+    //       console.log('result set', resultSet.rows._array)
+    //       if (resultSet.rows._array.length) {
+    //         completeLogin(email, password);
+    //       } else {
+    //         console.log('incorrect email or password')
+    //         setErrors(['Incorrect email or password'])
+    //         sessionActions.storeCurrentUser(null);
+    //         dispatch(sessionActions.sqlLogout(dispatch));
+    //       }
+    //     },
+    //     (txObj, error) => console.log(error)
+    //   );
+    // });
   };
 
   const completeLogin = async (email, password) => {

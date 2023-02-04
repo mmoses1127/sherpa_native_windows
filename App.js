@@ -12,11 +12,13 @@ import * as SQLite from 'expo-sqlite';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
+import { getCurrentUser } from './store/session';
 
 
 const App = () => {
 
   const db = SQLite.openDatabase('example.db');
+  console.log('db in app is', db)
   const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState([]);
 
@@ -108,7 +110,7 @@ const App = () => {
 
 
   // const [userType, setUserType] = useState('A');
-  const userType = useSelector(state => state.session);
+  const userType = useSelector(getCurrentUser);
   console.log(userType)
 
   const loggedIn = async () => {

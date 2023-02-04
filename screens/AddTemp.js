@@ -95,6 +95,8 @@ const AddTemp = () => {
       );
     });
 
+    navigate('/')
+
     // dispatch action to add to state
 
 

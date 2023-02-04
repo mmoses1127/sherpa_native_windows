@@ -54,6 +54,8 @@ export const getUnit = async (userType, setTempUnit, setSpeedUnit) => {
   console.log('unit is', unit)
 };
 
+export const yoooo = () => 5;
+
 const Settings = () => {
 
   const navigate = useNavigate();
