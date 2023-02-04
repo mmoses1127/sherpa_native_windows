@@ -135,20 +135,22 @@ export const createTemperatureSetting = (temperatureSetting) => async dispatch =
 };
 
 export const updateTemperatureSetting = (temperatureSetting) => async dispatch => {
-  const res = await csrfFetch(`/api/temperature_settings/${temperatureSetting.id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(temperatureSetting)
-  });
 
-  if (res.ok) {
-    const updatedTemperatureSetting = await res.json();
-    dispatch(addTemperatureSetting(updatedTemperatureSetting));
-    return updatedTemperatureSetting;
-  } else {
-    const errors = await res.json();
-    alert(errors)
-    return null;
-  }
+  db.transaction(tx => {
+    tx.executeSql(
+      `update temperature_settings set start_time = ?, end_time = ?, temperature = ? where id = ?`,
+      [temperatureSetting.start_time, temperatureSetting.end_time, temperatureSetting.temperature, temperatureSetting.id],
+      (txtObj, resultSet) => {
+        if (resultSet.rowsAffected > 0) {
+          dispatch(addTemperatureSetting(temperatureSetting))
+          return true;
+        } else {
+          console.log('no temperature setting found')
+        }
+      },
+      (txtObj, error) => console.log('error', error)
+    );
+  });
 };
 
 const temperatureSettingsReducer = (state = {}, action) => {
@@ -160,7 +162,6 @@ const temperatureSettingsReducer = (state = {}, action) => {
     case REMOVE_TEMPERATURE_SETTING:
       let newState = {...state};
       delete newState[action.temperatureSettingId];
-      console.log('new state', newState)
       return newState;
     default:
       return state;

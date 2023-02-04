@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { findUnitCookie, findSpeedLabel } from "./Settings";
 import { getSpeedSetting, fetchSpeedSetting, updateSpeedSetting } from "../store/speedSettings";
 
@@ -10,7 +10,7 @@ const EditSpeed = () => {
   const {speedItemId} = useParams(); 
   const speedSetting = useSelector(getSpeedSetting(speedItemId));
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const unit = findUnitCookie();
@@ -50,7 +50,7 @@ const EditSpeed = () => {
     }
     const updatedItem = await dispatch(updateSpeedSetting(updatedSpeedSetting));
     if (updatedItem) {
-      history.push('/');
+      navigate.push('/');
     } else {
       alert('Item could not be updated')
     }

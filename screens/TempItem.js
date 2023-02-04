@@ -20,7 +20,7 @@ const TempItem = ({temperatureSetting}) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    // navigate(`/temps/${temperatureSetting.id}`)
+    navigate(`/temps/${temperatureSetting.id}`)
   };
 
   return (

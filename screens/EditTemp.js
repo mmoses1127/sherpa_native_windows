@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
 import { convertCtoF, convertFtoC, findUnitCookie } from "./Settings";
 
@@ -10,10 +10,10 @@ const EditTemp = () => {
   const {tempItemId} = useParams(); 
   const tempSetting = useSelector(getTemperatureSetting(tempItemId));
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const unit = findUnitCookie('temp').slice(0,1);
+  const unit = 'F';
   const [temperature, setTemperature] = useState('');
 
 
@@ -68,12 +68,11 @@ const EditTemp = () => {
       end_time: endTime,
       temperature: unit === 'F' ? convertFtoC(temperature) : temperature
     }
-    const updatedItem = await dispatch(updateTemperatureSetting(updatedTemperatureSetting));
-    if (updatedItem) {
-      history.push('/');
-    } else {
-      alert('Item could not be updated')
-    }
+    
+    const res = await dispatch(updateTemperatureSetting(updatedTemperatureSetting));
+
+    if (res) history.push('/');
+
   }
 
   return (

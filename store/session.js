@@ -2,10 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import csrfFetch from './csrf.js';
 import * as SQLite from 'expo-sqlite';
 
+const db = SQLite.openDatabase('example.db');
+
 const ADD_CURRENT_USER = 'ADD_CURRENT_USER';
 const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
 
-const db = SQLite.openDatabase('example.db');
 
 export const getCurrentUser = (state = {}) => {
   if (state.session && state.session.user) {
@@ -14,23 +15,6 @@ export const getCurrentUser = (state = {}) => {
     return null;
   }
 }
-
-// Sign up function in case it is needed later:
-
-// export const signup = inputs => async dispatch => {
-//   let {email, name, password} = inputs;
-//   let res = await csrfFetch('/api/users', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       email,
-//       name,
-//       password
-//     })
-//   })
-//   let data = await res.json();
-//   storeCurrentUser(data);
-//   dispatch(addCurrentUser(data));
-// };
 
 export const sqlLogin = (user) => async (dispatch) => {
   const { email, password } = user;
