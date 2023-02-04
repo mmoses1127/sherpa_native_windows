@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import csrfFetch from './csrf.js';
+import * as SQLite from 'expo-sqlite';
 
 const ADD_CURRENT_USER = 'ADD_CURRENT_USER';
 const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
+
+const db = SQLite.openDatabase('example.db');
 
 export const getCurrentUser = (state = {}) => {
   if (state.session && state.session.user) {
@@ -29,10 +32,33 @@ export const getCurrentUser = (state = {}) => {
 //   dispatch(addCurrentUser(data));
 // };
 
-export const sqlLogout = (dispatch) => {
+export const sqlLog = (user) => async (dispatch) => {
+  const { email, password } = user;
 
-  // storeCurrentUser(null);
-  // dispatch(removeCurrentUser());
+  db.transaction(tx => {
+      console.log('attempting login as', email, password)
+      tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?', [email, password],
+        (txObj, resultSet) => {
+          let data = resultSet.rows._array;
+          console.log(data)
+          if (data.length) {
+            const targetUser = data[0]
+            storeCurrentUser(targetUser);
+            dispatch(addCurrentUser(targetUser));
+          } else {
+            console.log('incorrect email or password')
+            // dispatch(sqlLogout(dispatch));
+          }
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
+  };
+
+export const sqlLogout = () => async dispatch => {
+
+  storeCurrentUser(null);
+  dispatch(removeCurrentUser());
 
 };
 

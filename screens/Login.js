@@ -17,38 +17,52 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
 
-  const sqlLogin = async (e) => {
+  const logUserIn = () => {
+    dispatch(sessionActions.sqlLog({email, password}));
 
-    db.transaction(tx => {
-      console.log('attempting login as', email, password)
-      tx.executeSql('SELECT * FROM users WHERE email = ? AND password', null,
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-          // setUsers(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
+  
+  }
 
-    // e.preventDefault();
-    // db.transaction(tx => {
-    //   console.log('logging in with', email, password)
-    //   tx.executeSql('SELECT * FROM users', null,
-    //     (txObj, resultSet) => {
-    //       console.log('result set', resultSet.rows._array)
-    //       if (resultSet.rows._array.length) {
-    //         completeLogin(email, password);
-    //       } else {
-    //         console.log('incorrect email or password')
-    //         setErrors(['Incorrect email or password'])
-    //         sessionActions.storeCurrentUser(null);
-    //         dispatch(sessionActions.sqlLogout(dispatch));
-    //       }
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
-  };
+
+  // const sqlLogin = async (e) => {
+
+  //   db.transaction(tx => {
+  //     console.log('attempting login as', email, password)
+  //     tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?', [email, password],
+  //       (txObj, resultSet) => {
+  //         console.log(resultSet.rows._array)
+  //         // setUsers(resultSet.rows._array)
+  //         if (resultSet.rows._array.length) {
+  //           completeLogin(email, password);
+  //         } else {
+  //           console.log('incorrect email or password')
+  //           setErrors(['Incorrect email or password'])
+  //           dispatch(sessionActions.sqlLogout(dispatch));
+  //         }
+  //       },
+  //       (txObj, error) => console.log(error)
+  //     );
+  //   });
+
+  //   e.preventDefault();
+  //   db.transaction(tx => {
+  //     console.log('logging in with', email, password)
+  //     tx.executeSql('SELECT * FROM users', null,
+  //       (txObj, resultSet) => {
+  //         console.log('result set', resultSet.rows._array)
+  //         if (resultSet.rows._array.length) {
+  //           completeLogin(email, password);
+  //         } else {
+  //           console.log('incorrect email or password')
+  //           setErrors(['Incorrect email or password'])
+  //           sessionActions.storeCurrentUser(null);
+  //           dispatch(sessionActions.sqlLogout(dispatch));
+  //         }
+  //       },
+  //       (txObj, error) => console.log(error)
+  //     );
+  //   });
+  // };
 
   const completeLogin = async (email, password) => {
     // await AsyncStorage.setItem('userType', email[0].toUpperCase());
@@ -93,7 +107,7 @@ const Login = () => {
         <TextInput onChangeText={text => setEmail(text)} className="w-full h-10 m-2 bg-cyan-200 autofill:bg-cyan-200" />
         <Text className="text-md text-left w-full">Password</Text>
         <TextInput onChangeText={text => setPassword(text)} className="w-full h-10 m-2 bg-cyan-200 autofill:bg-cyan-200" />
-        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Login" onPress={sqlLogin} />
+        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Login" onPress={logUserIn} />
       </View>
     </View>
   )
