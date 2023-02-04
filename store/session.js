@@ -31,8 +31,8 @@ export const getCurrentUser = (state = {}) => {
 
 export const sqlLogout = (dispatch) => {
 
-  storeCurrentUser(null);
-  dispatch(removeCurrentUser());
+  // storeCurrentUser(null);
+  // dispatch(removeCurrentUser());
 
 };
 
