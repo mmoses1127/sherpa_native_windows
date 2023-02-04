@@ -88,6 +88,35 @@ export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch
   };
 };
 
+export const sqlCreateTemperatureSetting = (temperatureSetting) => async dispatch => {
+  const db = SQLite.openDatabase('example.db');
+
+  db.transaction(tx => { 
+    tx.executeSql('INSERT INTO temperature_settings (start_time, end_time, temperature) values (?, ?, ?)', 
+    [temperatureSetting.start_time, temperatureSetting.end_time, temperatureSetting.temperature],
+    (txObj, resultSet) => {
+      console.log('resultobject', {...temperatureSetting, id: resultSet.insertId});
+      dispatch(addTemperatureSetting({...temperatureSetting, id: resultSet.insertId}))
+    },
+    (txObj, error) => {
+      console.log('Error', error);
+    }
+    );
+  });
+
+  db.transaction(tx => {
+    console.log('selecting temp items...')
+    tx.executeSql('SELECT * FROM temperature_settings', null,
+      (txObj, resultSet) => {
+        console.log(resultSet.rows._array)
+      },
+      (txObj, error) => console.log(error)
+    );
+  });
+
+}
+
+
 export const createTemperatureSetting = (temperatureSetting) => async dispatch => {
   const res = await csrfFetch(`/api/temperature_settings`, {
     method: 'POST',

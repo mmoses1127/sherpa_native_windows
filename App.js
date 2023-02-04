@@ -62,29 +62,29 @@ const App = () => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
     });
 
-    db.transaction(tx => {
-      console.log('adding user a...')
-      tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['a@test.io', 'password', 'A'],
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
+    // db.transaction(tx => {
+    //   console.log('adding user a...')
+    //   tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['a@test.io', 'password', 'A'],
+    //     (txObj, resultSet) => {
+    //       console.log(resultSet.rows._array)
+    //     },
+    //     (txObj, error) => console.log(error)
+    //   );
+    // });
 
-    db.transaction(tx => {
-      console.log('adding user b...')
-      tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['b@test.io', 'password', 'B'],
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
+    // db.transaction(tx => {
+    //   console.log('adding user b...')
+    //   tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['b@test.io', 'password', 'B'],
+    //     (txObj, resultSet) => {
+    //       console.log(resultSet.rows._array)
+    //     },
+    //     (txObj, error) => console.log(error)
+    //   );
+    // });
 
     db.transaction(tx => {
       console.log('selecting users...')
-      tx.executeSql('SELECT * FROM users;', null,
+      tx.executeSql('SELECT * FROM users', null,
         (txObj, resultSet) => {
           console.log(resultSet.rows._array)
           setUsers(resultSet.rows._array)
