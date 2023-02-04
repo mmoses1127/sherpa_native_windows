@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../store/session";
-import { fetchTemperatureSettings, sqlFetchTemperatureSettings, getTemperatureSettings } from "../store/temperatureSettings";
+import { fetchTemperatureSettings, sqlFetchTemperatureSettings, getTemperatureSettings, addTemperatureSettings } from "../store/temperatureSettings";
 import { fetchSpeedSettings, getSpeedSettings } from "../store/speedSettings";
 import TempItem from "./TempItem";
 import SpeedItem from "./SpeedItem";
@@ -21,10 +21,11 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   // const temperatureSettings = useSelector(getTemperatureSettings);
   const speedSettings = useSelector(getSpeedSettings);
-  // const userType = useSelector(getCurrentUser).userType;
-  const [userType, setUserType] = useState('A');
-  console.log('hello from dashboard')
+  const userType = useSelector(getCurrentUser).user_type;
+  // const [userType, setUserType] = useState('A');
+  console.log('hello from dashboard', temperatureSettings);
   const [temperatureSettings, setTemperatureSettings] = useState([]);
+  // const [temperatureSettings, setTemperatureSettings] = useState([]);
 
   // useEffect(() => {
   //   async () => {
@@ -50,8 +51,12 @@ const Dashboard = () => {
         (txtObj, error) => {
           console.log('error', error);
         }
-      );
-    });
+        );
+
+      });
+      
+      // if (tempSettings.length) dispatch(addTemperatureSettings(temperatureSettings));
+
     // let temps = dispatch(sqlFetchTemperatureSettings());
     // console.log('temps', temps);
     } else {

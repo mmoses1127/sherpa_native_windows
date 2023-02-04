@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createTemperatureSetting, addTemperatureSetting } from "../store/temperatureSettings";
+import { createTemperatureSetting, addTemperatureSetting, sqlFetchTemperatureSettings } from "../store/temperatureSettings";
 import { convertFtoC, findUnitCookie } from "./Settings";
 import { Button, TextInput, View, Text, Pressable } from 'react-native';
 import { getUnit } from "./Settings";
@@ -85,15 +85,15 @@ const AddTemp = () => {
       );
     });
 
-    db.transaction(tx => {
-      console.log('selecting temp items...')
-      tx.executeSql('SELECT * FROM temperature_settings', null,
-        (txObj, resultSet) => {
-          console.log('all temps', resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
+    // db.transaction(tx => {
+    //   console.log('selecting temp items...')
+    //   tx.executeSql('SELECT * FROM temperature_settings', null,
+    //     (txObj, resultSet) => {
+    //       console.log('all temps', resultSet.rows._array)
+    //     },
+    //     (txObj, error) => console.log(error)
+    //   );
+    // });
 
     navigate('/')
 

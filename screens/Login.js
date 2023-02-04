@@ -19,42 +19,31 @@ const Login = () => {
 
   const sqlLogin = async (e) => {
 
+    // e.preventDefault();
     db.transaction(tx => {
-      console.log('selecting users...')
-      tx.executeSql('SELECT * FROM users', null,
+      console.log('logging in with', email, password)
+      tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?', [email, password],
         (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-          setUsers(resultSet.rows._array)
+          console.log('result set', resultSet.rows._array)
+          if (resultSet.rows._array.length) {
+            completeLogin(resultSet.rows._array[0]);
+          } else {
+            console.log('incorrect email or password')
+            setErrors(['Incorrect email or password'])
+            sessionActions.storeCurrentUser(null);
+            dispatch(sessionActions.sqlLogout(dispatch));
+          }
         },
         (txObj, error) => console.log(error)
       );
     });
-
-    // e.preventDefault();
-    // db.transaction(tx => {
-    //   console.log('logging in with', email, password)
-    //   tx.executeSql('SELECT * FROM users', null,
-    //     (txObj, resultSet) => {
-    //       console.log('result set', resultSet.rows._array)
-    //       if (resultSet.rows._array.length) {
-    //         completeLogin(email, password);
-    //       } else {
-    //         console.log('incorrect email or password')
-    //         setErrors(['Incorrect email or password'])
-    //         sessionActions.storeCurrentUser(null);
-    //         dispatch(sessionActions.sqlLogout(dispatch));
-    //       }
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
   };
 
-  const completeLogin = async (email, password) => {
+  const completeLogin = async (user) => {
     // await AsyncStorage.setItem('userType', email[0].toUpperCase());
     // let token = await AsyncStorage.getItem('userType');
     // console.log('login token is', token)
-    dispatch(sessionActions.addCurrentUser({id: 'notSet', email, password, userType: 'notSet'}));
+    dispatch(sessionActions.addCurrentUser(user));
     navigate('/dashboard');
   };
 

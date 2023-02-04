@@ -29,8 +29,8 @@ export const getCurrentUser = (state = {}) => {
 //   dispatch(addCurrentUser(data));
 // };
 
-export const sqlLogout = (dispatch) => {
-
+export const sqlLogout = () => {
+  console.log('inside sqlLogout')
   // storeCurrentUser(null);
   // dispatch(removeCurrentUser());
 

@@ -5,17 +5,7 @@ import { getCurrentUser } from "../store/session";
 import { View, Button, Text, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const findUnitCookie = (type) => {
-  // const targetCookie = type === 'temp' ? 'tempUnit' : 'speedUnit';
-  // const cookies = document.cookie.split(';');
-  // for (let i = 0; i < cookies.length; i++) {
-  //   const cookie = cookies[i].split('=');
-  //   if (cookie[0].trim() === targetCookie) {
-  //     return cookie[1];
-  //   }
-  // }
-  // return 'Fahrenheit';
-};
+const userType = useSelector(getCurrentUser).user_type;
 
 export const convertCtoF = (temp) => {
   return Math.round(((temp * 9/5) + 32) * 10) / 10;
@@ -51,10 +41,7 @@ export const getUnit = async (userType, setTempUnit, setSpeedUnit) => {
       setSpeedUnit(unit);
     }
   }
-  console.log('unit is', unit)
 };
-
-export const yoooo = () => 5;
 
 const Settings = () => {
 
@@ -65,9 +52,7 @@ const Settings = () => {
   const [tempUnit, setTempUnit] = useState('Fahrenheit');
   const [speedUnit, setSpeedUnit] = useState('Numbers');
 
-
   useEffect(() => {
-    console.log('setting unit to')
     getUnit(userType, setTempUnit, setSpeedUnit);
   }, []);
   

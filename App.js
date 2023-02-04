@@ -21,6 +21,10 @@ const App = () => {
   console.log('db in app is', db)
   const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const user = useSelector(getCurrentUser)
+
+  const state = useSelector(state => state);
+  console.log('state', state)
 
   const exportDB = async () => {
     await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
@@ -64,25 +68,25 @@ const App = () => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
     });
 
-    // db.transaction(tx => {
-    //   console.log('adding user a...')
-    //   tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['a@test.io', 'password', 'A'],
-    //     (txObj, resultSet) => {
-    //       console.log(resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
+    db.transaction(tx => {
+      console.log('adding user a...')
+      tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['a@test.io', 'password', 'A'],
+        (txObj, resultSet) => {
+          console.log(resultSet.rows._array)
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
 
-    // db.transaction(tx => {
-    //   console.log('adding user b...')
-    //   tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['b@test.io', 'password', 'B'],
-    //     (txObj, resultSet) => {
-    //       console.log(resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
+    db.transaction(tx => {
+      console.log('adding user b...')
+      tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['b@test.io', 'password', 'B'],
+        (txObj, resultSet) => {
+          console.log(resultSet.rows._array)
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
 
     db.transaction(tx => {
       console.log('selecting users...')
@@ -100,38 +104,13 @@ const App = () => {
   }, []);
 
 
-  // const showUsers = () => {
-  //   return users.map((user, index) => {
-  //     return (
-  //       <Text key={index}>{user.email}</Text>
-  //     )
-  //   })
-  // }
-
-
-  // const [userType, setUserType] = useState('A');
-  const userType = useSelector(getCurrentUser);
-  console.log(userType)
-
-  const loggedIn = async () => {
-    console.log('checking user')
-    let token = await AsyncStorage.getItem('userType');
-    console.log('token is', token)
-    if (token.length) {
-      return token;
-    } else {
-      return false;
-    }
+  const showUsers = () => {
+    return users.map((user, index) => {
+      return (
+        <Text key={index}>{user.email}</Text>
+      )
+    })
   }
-
-  // useEffect(() => {
-  //   async () => {
-  //     console.log('usertype', userType)
-  //     const type = await loggedIn();
-  //     setUserType(type);
-  //   }
-  // }, []);
-
 
   return (
     <NativeRouter>
@@ -139,12 +118,12 @@ const App = () => {
         <Button title="Export DB" onPress={exportDB} />
         <Button title="Import DB" onPress={importDb} />
         <Routes>
-          <Route exact path="/" element={userType ? <Dashboard /> : <Login />} />
-          <Route exact path="/dashboard" element={userType ? <Dashboard /> : <Login />} />
-          <Route exact path="/add-setting" element={userType ? <AddSetting db={db}/> : <Login />} />
+          <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
+          <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
+          <Route exact path="/add-setting" element={user ? <AddSetting db={db}/> : <Login />} />
           {/* <Route exact path="/temps/:tempItemId" element={0 ? <Login /> : <EditTemp />} /> */}
           {/* <Route exact path="/speeds/:speedItemId" element={0 ? <Login /> : <EditSpeed />} /> */}
-          <Route exact path="/settings" element={userType ? <Settings /> : <Login />} />
+          <Route exact path="/settings" element={user ? <Settings /> : <Login />} />
         </Routes>
       </View>
     </NativeRouter>
