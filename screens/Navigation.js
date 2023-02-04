@@ -16,6 +16,7 @@ const Navigation = () => {
     console.log('logging out', notoken)
     .catch(err => console.log(err));
     // await dispatch(sessionActions.logout());
+    await dispatch(sessionActions.sqlLogout());
     navigate('/');
   };
 

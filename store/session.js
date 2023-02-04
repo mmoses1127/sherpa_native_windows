@@ -29,6 +29,13 @@ export const getCurrentUser = (state = {}) => {
 //   dispatch(addCurrentUser(data));
 // };
 
+export const sqlLogout = (dispatch) => {
+
+  storeCurrentUser(null);
+  dispatch(removeCurrentUser());
+
+};
+
 export const logout = () => async dispatch => {
   const res = await csrfFetch(`/api/session`, {
     method: 'DELETE'
@@ -54,14 +61,14 @@ export const removeCurrentUser = () => {
   });
 };
 
-export const restoreSession = () => async dispatch => {
-  let res = await csrfFetch('/api/session');
-  storeCSRFToken(res);
-  let data = await res.json();
-  storeCurrentUser(data.user);
-  dispatch(addCurrentUser(data.user));
-  return res;
-}
+// export const restoreSession = () => async dispatch => {
+//   let res = await csrfFetch('/api/session');
+//   storeCSRFToken(res);
+//   let data = await res.json();
+//   storeCurrentUser(data.user);
+//   dispatch(addCurrentUser(data.user));
+//   return res;
+// }
 
 export const storeCurrentUser = async (user) => {
   if (user) {
@@ -71,29 +78,29 @@ export const storeCurrentUser = async (user) => {
   }
 };
 
-export const storeCSRFToken = async (res) => {
-  const token = res.headers.get('X-CSRF-Token');
-  if (token) await AsyncStorage.setItem('X-CSRF-Token', token);
-};
+// export const storeCSRFToken = async (res) => {
+//   const token = res.headers.get('X-CSRF-Token');
+//   if (token) await AsyncStorage.setItem('X-CSRF-Token', token);
+// };
 
-export const login = (user) => async (dispatch) => {
-  const { email, password } = user;
-  let res = await csrfFetch('/api/session', {
-    method: 'POST',
-    body: JSON.stringify({
-      email,
-      password
-    })
-  });
-  if (res.ok) {
-    let data = await res.json();
-    storeCurrentUser(data)
-    dispatch(addCurrentUser(data));
-    return res;
-  } else {
-    return ({error: 'We are unable to log you in. Please try again. If the problem persists, contact an administrator.'})
-  }
-}
+// export const login = (user) => async (dispatch) => {
+//   const { email, password } = user;
+//   let res = await csrfFetch('/api/session', {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       email,
+//       password
+//     })
+//   });
+//   if (res.ok) {
+//     let data = await res.json();
+//     storeCurrentUser(data)
+//     dispatch(addCurrentUser(data));
+//     return res;
+//   } else {
+//     return ({error: 'We are unable to log you in. Please try again. If the problem persists, contact an administrator.'})
+//   }
+// }
 
 
 
@@ -110,8 +117,10 @@ fixUser();
 const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_CURRENT_USER:
+      console.log({...state, user: action.user})
       return { ...state, user: action.user }
     case REMOVE_CURRENT_USER:
+      console.log({...state, user: null})
       return { ...state, user: null}
     default:
       return state;

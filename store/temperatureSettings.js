@@ -1,4 +1,5 @@
 import csrfFetch from './csrf.js';
+import * as SQLite from 'expo-sqlite';
 
 export const ADD_TEMPERATURE_SETTINGS = `ADD_TEMPERATURE_SETTINGS`;
 export const ADD_TEMPERATURE_SETTING = `ADD_TEMPERATURE_SETTING`;
@@ -41,6 +42,23 @@ export const getTemperatureSetting = temperatureSettingId => (state) => {
   if (!state.temperatureSettings) return null;
   return state.temperatureSettings[temperatureSettingId];
 }
+
+export const sqlFetchTemperatureSettings = (db) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      `select * from temperature_settings`,
+      null,
+      (txtObj, resultSet) => {
+        if (resultSet.rows._array.length) {
+          dispatch(addTemperatureSettings(resultSet.rows._array))
+        } else {
+          console.log('no temperature settings found')
+        }
+      },
+      (txtObj, error) => console.log('error', error)
+    );
+  });
+};
 
 export const fetchTemperatureSettings = () => async dispatch => {
   const res = await fetch(`/api/temperature_settings`);
