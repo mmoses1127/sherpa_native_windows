@@ -40,8 +40,8 @@ const EditSpeed = () => {
 
   useEffect(() => {
     if (speedSetting) {
-      // setStartTime(new Date(speedSetting.startTime));
-      // setEndTime(new Date(speedSetting.endTime));
+      setStartTime(new Date(speedSetting.start_time));
+      setEndTime(new Date(speedSetting.end_time));
       setSpeed(speedSetting.speed);
     }
   }, [speedSetting]);
@@ -89,13 +89,13 @@ const EditSpeed = () => {
       <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
         <View className="flex flex-row items-center justify-start w-full">
           <Text className="min-w-[120px]">Start</Text>
-          <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
+          <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
             <Text className="text-white">{formatTime(startTime)}</Text>
           </Pressable>
         </View>
         <View className="flex flex-row items-center text-white justify-start w-full">
           <Text className="min-w-[120px]">End</Text>
-          <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
+          <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
             <Text className="text-white">{formatTime(endTime)}</Text>
           </Pressable>
         </View>
@@ -114,7 +114,7 @@ const EditSpeed = () => {
 
       <Button  title="Save" onPress={handleUpdate} />
       {show && 
-      <DateTimePicker testID="dateTimePicker" value={startTime} mode={'time'}
+      <DateTimePicker testID="dateTimePicker" value={mode === 'start' ? startTime : endTime} mode={'time'}
       is24Hour={false} display="default" onChange={handleClockChange} />
       }
     </View>

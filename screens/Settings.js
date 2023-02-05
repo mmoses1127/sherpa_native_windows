@@ -85,10 +85,10 @@ const Settings = () => {
       {userType === 'A' &&
         <View className="flex flex-row items-center justify-center">
           <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
-            <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit X' : 'Fahrenheit' }</Text>
+            <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit \u2713' : 'Fahrenheit' }</Text>
           </Pressable>
           <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Celcius')}>
-            <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius X' : 'Celcius' }</Text>
+            <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius \u2713' : 'Celcius' }</Text>
           </Pressable>
         </View>
       }
@@ -96,10 +96,10 @@ const Settings = () => {
       {userType === 'B' &&
         <View className="flex flex-row items-center justify-center">
           <Pressable className={` ${speedUnit === 'Labels' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setSpeedUnit('Labels')}>
-            <Text className="text-white text-lg">{speedUnit === 'Labels' ? 'Labels X' : 'Labels' }</Text>
+            <Text className="text-white text-lg">{speedUnit === 'Labels' ? 'Labels \u2713' : 'Labels' }</Text>
           </Pressable>
           <Pressable className={` ${speedUnit === 'Numbers' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setSpeedUnit('Numbers')}>
-            <Text className="text-white text-lg">{speedUnit === 'Numbers' ? 'Numbers X' : 'Numbers' }</Text>
+            <Text className="text-white text-lg">{speedUnit === 'Numbers' ? 'Numbers \u2713' : 'Numbers' }</Text>
           </Pressable>
         </View>
       }
