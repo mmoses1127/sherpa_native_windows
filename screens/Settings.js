@@ -41,7 +41,6 @@ export const fetchUnit = async (userType) => {
       return unit ? unit : 'Numbers';
     }
   }
-  console.log('unit is', unit)
 };
 
 const Settings = () => {
@@ -57,9 +56,7 @@ const Settings = () => {
   useEffect(() => {
 
     const setUnit = async () => {
-      console.log('setting unit...')
       let unit = await fetchUnit(userType);
-      console.log('unit is', unit)
       userType === 'A' ? setTempUnit(unit) : setSpeedUnit(unit);
     }
 
@@ -74,10 +71,8 @@ const Settings = () => {
   const handleSave = async () => {
     if (userType === 'A') {
       await AsyncStorage.setItem('tempUnit', tempUnit);
-      console.log('tempUnit set to ', tempUnit);
     } else {
       await AsyncStorage.setItem('speedUnit', speedUnit);
-      console.log('speedUnit set to ', speedUnit);
     }
     navigate('/dashboard')
   };

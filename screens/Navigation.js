@@ -11,7 +11,6 @@ const Navigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const state = useSelector(state => state);
-  console.log('state', state)
 
   const handleLogout = async () => {
     await dispatch(logout());

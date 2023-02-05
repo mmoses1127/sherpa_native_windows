@@ -25,9 +25,7 @@ const AddSpeed = () => {
   useEffect(() => {
 
     const setUnit = async () => {
-      console.log('setting unit...')
       let unit = await fetchUnit(userType);
-      console.log('unit is', unit)
       setSpeedUnit(unit);
     }
 

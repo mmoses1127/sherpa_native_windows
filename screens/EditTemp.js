@@ -25,9 +25,7 @@ const EditTemp = () => {
   useEffect(() => {
 
     const setUnit = async () => {
-      console.log('setting unit...')
       let unit = await fetchUnit(userType);
-      console.log('unit is', unit)
       setTempUnit(unit[0]);
     }
 
@@ -58,7 +56,6 @@ const EditTemp = () => {
   }, [temperature, tempUnit]);
 
   const handleUpdate = async (e) => {
-    console.log('handleUpdate vars:', startTime, endTime, temperature)
     e.preventDefault();
 
     if (!startTime || !endTime || !temperature) {

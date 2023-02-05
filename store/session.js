@@ -103,8 +103,8 @@ let initialState = {};
 
 const fixUser = async () => {
   let user = await AsyncStorage.getItem("currentUser");
+  user ||= null;
   initialState = { 'user': user};
-  console.log(initialState)
 }
 
 fixUser();

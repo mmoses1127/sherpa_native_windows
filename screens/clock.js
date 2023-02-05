@@ -1,5 +1,5 @@
 const formatTime = (time) => {
-  console.log(time)
+  // console.log(time)
   let hours = time.getHours();
   let minutes = time.getMinutes();
 
