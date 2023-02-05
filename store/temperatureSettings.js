@@ -8,7 +8,6 @@ export const ADD_TEMPERATURE_SETTING = `ADD_TEMPERATURE_SETTING`;
 export const REMOVE_TEMPERATURE_SETTING = `REMOVE_TEMPERATURE_SETTING`;
 
 const addTemperatureSettings = (temperatureSettings) => {
-  console.log('adding temperature setting fo real', temperatureSettings)
   return ({
     type: ADD_TEMPERATURE_SETTINGS,
     temperatureSettings
@@ -47,14 +46,12 @@ export const getTemperatureSetting = temperatureSettingId => (state) => {
 }
 
 export const fetchTemperatureSettings = () => async dispatch => {
-  console.log('fetching temperature settings')
   db.transaction(tx => {
     tx.executeSql(
       `select * from temperature_settings`,
       null,
       (txtObj, resultSet) => {
         if (resultSet.rows._array.length) {
-          console.log('resultSet', resultSet.rows._array);
           let stateSlice = {};
           resultSet.rows._array.forEach(temperatureSetting => {
             stateSlice[temperatureSetting.id] = temperatureSetting;
@@ -88,24 +85,6 @@ export const fetchTemperatureSetting = (temperatureSettingId) => async dispatch 
   });
 };
 
-export const sqlDeleteTemperatureSetting = (db, temperatureSettingId) => {
-  db.transaction(tx => {
-    tx.executeSql(
-      `delete from temperature_settings where id = ?`,
-      [temperatureSettingId],
-      (txtObj, resultSet) => {
-        if (resultSet.rows._array.length) {
-          // dispatch(removeTemperatureSetting(temperatureSettingId))
-          console.log('deleted temperature setting number ', temperatureSettingId)
-        } else {
-          console.log('no temperature setting found')
-        }
-      },
-      (txtObj, error) => console.log('error', error)
-    );
-  });
-}
-
 export const deleteTemperatureSetting = (temperatureSettingId) => async dispatch => {
   db.transaction(tx => {
     tx.executeSql(
@@ -137,13 +116,13 @@ export const createTemperatureSetting = (temperatureSetting) => async dispatch =
 export const updateTemperatureSetting = (temperatureSetting) => async dispatch => {
 
   db.transaction(tx => {
+    console.log('updating temperature setting', temperatureSetting)
     tx.executeSql(
       `update temperature_settings set start_time = ?, end_time = ?, temperature = ? where id = ?`,
       [temperatureSetting.start_time, temperatureSetting.end_time, temperatureSetting.temperature, temperatureSetting.id],
       (txtObj, resultSet) => {
         if (resultSet.rowsAffected > 0) {
           dispatch(addTemperatureSetting(temperatureSetting))
-          return true;
         } else {
           console.log('no temperature setting found')
         }

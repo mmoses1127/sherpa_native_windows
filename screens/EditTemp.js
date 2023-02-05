@@ -29,8 +29,8 @@ const EditTemp = () => {
 
   useEffect(() => {
     if (tempSetting) {
-      setStartTime(tempSetting.start_time);
-      setEndTime(tempSetting.end_time);
+      setStartTime(new Date(tempSetting.start_time));
+      setEndTime(new Date(tempSetting.end_time));
       setTemperature(tempUnit === 'F' ? convertCtoF(tempSetting.temperature) : tempSetting.temperature);
     }
   }, [tempSetting, tempUnit]);
@@ -101,13 +101,13 @@ const EditTemp = () => {
         <View className="flex flex-row items-center justify-start w-full">
           <Text className="min-w-[120px]">Start</Text>
           <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
-            <Text className="text-white">{String(startTime).slice(11,16)}</Text>
+            <Text className="text-white">{formatTime(startTime)}</Text>
           </Pressable>
         </View>
         <View className="flex flex-row items-center text-white justify-start w-full">
           <Text className="min-w-[120px]">End</Text>
           <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
-            <Text className="text-white">{String(endTime).slice(11,16)}</Text>
+            <Text className="text-white">{formatTime(endTime)}</Text>
           </Pressable>
         </View>
         <View className="flex flex-row items-center justify-start w-full">
