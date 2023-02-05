@@ -21,7 +21,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const speedSettings = useSelector(getSpeedSettings);
   // const userType = useSelector(getCurrentUser).user_type;
-  const userType = 'A'
+  const userType = 'B'
   const temperatureSettings = useSelector(getTemperatureSettings);
   // const [temperatureSettings, setTemperatureSettings] = useState([]);
 

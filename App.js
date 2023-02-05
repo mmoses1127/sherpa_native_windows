@@ -22,7 +22,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   // const [users, setUsers] = useState([]);
   // const user = useSelector(getCurrentUser);
-  const user = 'A';
+  const user = 'B';
   const state = useSelector(state => state);
 
   // const exportDB = async () => {

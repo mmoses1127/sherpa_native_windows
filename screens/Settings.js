@@ -48,7 +48,7 @@ const Settings = () => {
 
   const navigate = useNavigate();
   // const userType = useSelector(getCurrentUser).userType;
-  const userType = 'A';
+  const userType = 'B';
 
   const [tempUnit, setTempUnit] = useState('Fahrenheit');
   const [speedUnit, setSpeedUnit] = useState('Numbers');
@@ -86,12 +86,28 @@ const Settings = () => {
     <View className='flex flex-col justify-center items-center w-full'>
       <Text className='text-xl mb-10'>{userType === 'A' ? 'Select Temperature Units' : 'Select Intensity Display Mode'}</Text>
       <View className="flex flex-row m-4">
-      <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
-        <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit X' : 'Fahrenheit' }</Text>
-      </Pressable>
-      <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Celcius')}>
-        <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius X' : 'Celcius' }</Text>
-      </Pressable>
+      {userType === 'A' &&
+        <View>
+          <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
+            <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit X' : 'Fahrenheit' }</Text>
+          </Pressable>
+          <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Celcius')}>
+            <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius X' : 'Celcius' }</Text>
+          </Pressable>
+        </View>
+      }
+
+      {userType === 'B' &&
+        <View className="flex flex-row items-center justify-center">
+          <Pressable className={` ${speedUnit === 'Labels' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setSpeedUnit('Labels')}>
+            <Text className="text-white text-lg">{speedUnit === 'Labels' ? 'Labels X' : 'Labels' }</Text>
+          </Pressable>
+          <Pressable className={` ${speedUnit === 'Numbers' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setSpeedUnit('Numbers')}>
+            <Text className="text-white text-lg">{speedUnit === 'Numbers' ? 'Numbers X' : 'Numbers' }</Text>
+          </Pressable>
+        </View>
+      }
+
       </View>
       <View className="flex flex-col items-center justify-between">
 
