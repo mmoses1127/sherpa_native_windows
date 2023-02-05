@@ -20,18 +20,17 @@ const AddSpeed = () => {
   // const unit = findUnitCookie('speed');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const userType = 'B';
 
   useEffect(() => {
 
     const setUnit = async () => {
-      let unit = await fetchUnit(userType);
+      let unit = await fetchUnit('B');
       setSpeedUnit(unit);
     }
 
     setUnit();
 
-  }, [userType]);
+  }, []);
 
   const handleSave = (e) => {
     e.preventDefault();

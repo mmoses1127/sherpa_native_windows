@@ -20,18 +20,17 @@ const AddTemp = () => {
   const [temperature, setTemperature] = useState('Fahrenheit');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const userType = 'A';
 
   useEffect(() => {
 
     const setUnit = async () => {
-      let unit = await fetchUnit(userType);
+      let unit = await fetchUnit('A');
       setTempUnit(unit[0]);
     }
 
     setUnit();
 
-  }, [userType]);
+  }, []);
 
   useEffect(() => {
     if (tempUnit === 'F') {

@@ -25,13 +25,13 @@ const EditTemp = () => {
   useEffect(() => {
 
     const setUnit = async () => {
-      let unit = await fetchUnit(userType);
+      let unit = await fetchUnit('A');
       setTempUnit(unit[0]);
     }
 
     setUnit();
 
-  }, [userType]);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchTemperatureSetting(tempItemId))
