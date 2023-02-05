@@ -24,13 +24,16 @@ const AddSetting = () => {
             <Icon name='plus' size={30} color='blue' />
           ),
         }}
-        /> : <Tab.Screen name="Add Speed" component={AddSpeed} options={{
+        /> : 
+        <Tab.Screen name="Add Speed" component={AddSpeed} options={{
           tabBarLabel: 'Add Item',
           tabBarIcon: () => (
             <Icon name='plus' size={30} color='blue' />
           ),
         }}
-        />}
+        />
+        }
+        
         <Tab.Screen name="Settings" component={Settings} options={{
           tabBarLabel: 'Settings',
           tabBarIcon: () => (

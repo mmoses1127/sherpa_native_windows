@@ -6,8 +6,7 @@ import Login from './screens/Login';
 import Dashboard from './screens/Dashboard';
 import AddSetting from './screens/AddSetting';
 import Settings from './screens/Settings';
-import EditTemp from './screens/EditTemp';
-import EditSpeed from './screens/EditSpeed';
+import EditSetting from './screens/EditSetting';
 import { useSelector } from 'react-redux';
 import * as SQLite from 'expo-sqlite';
 import * as Sharing from 'expo-sharing';
@@ -43,10 +42,9 @@ const App = () => {
     
     
     db.transaction(tx => {
-      console.log('selecting users...')
+      console.log('checking users...')
       tx.executeSql('SELECT * FROM users WHERE email = ? OR email = ?', ["a@test.io", "b@test.io"],
       (txObj, resultSet) => {
-        console.log(resultSet.rows._array)
         if (resultSet.rows._array.length < 2) {
           console.log('populating users...');
           
@@ -54,7 +52,7 @@ const App = () => {
             console.log('adding user A...')
             tx.executeSql('INSERT INTO users (email, password, user_type, session_token) values (?, ?, ?, ?)', ['a@test.io', 'password', 'A', null],
             (txObj, resultSet) => {
-              console.log(resultSet.rows._array)
+              console.log('added user B');
             },
             (txObj, error) => console.log(error)
             );
@@ -64,7 +62,7 @@ const App = () => {
               console.log('adding user B...')
               tx.executeSql('INSERT INTO users (email, password, user_type, session_token) values (?, ?, ?, ?)', ['b@test.io', 'password', 'B', null],
                 (txObj, resultSet) => {
-                    console.log(resultSet.rows._array)
+                    console.log('added user B');
                   },
                   (txObj, error) => console.log(error)
             );
@@ -75,6 +73,7 @@ const App = () => {
       );
     });
 
+    console.log('DB loading complete!')
     setIsLoading(false);
 
   }, []);
@@ -97,10 +96,11 @@ const App = () => {
         {user ? (
         <>
           <Stack.Screen name="Dashboard" component={Dashboard} />
-          <Stack.Screen name="AddSetting" component={AddSetting} options={{ headerShown: false }}/>
+          <Stack.Screen name="AddSetting" component={AddSetting}/>
           <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name="EditTemp" component={EditTemp} />
-          <Stack.Screen name="EditSpeed" component={EditSpeed} />
+          <Stack.Screen name="EditSetting" component={EditSetting} />
+          {/* <Stack.Screen name="EditTemp" component={EditTemp} />
+          <Stack.Screen name="EditSpeed" component={EditSpeed} /> */}
         </>
         ) : (
         <Stack.Screen name="Login" component={Login} />

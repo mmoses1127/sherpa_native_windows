@@ -14,7 +14,7 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     await dispatch(logout());
-    navigation.navigate('Login'); 
+    // navigation.navigate('Login'); 
   };
 
   return (

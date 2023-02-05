@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import { Button, Text, View } from 'react-native';
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
+import { convertToLocalTime } from "./clock";
 
 
 const SpeedItem = ({ speedSetting }) => {
-
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userType = useSelector(getUserType);
@@ -34,13 +34,14 @@ const SpeedItem = ({ speedSetting }) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    navigation.navigate('EditSpeed', {id: speedSetting.id})
+    navigation.navigate('EditSetting', {itemId: speedSetting.id});
   };
+
 
   return (
     <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-[90%] min-w-[300px]" key={speedSetting.id}>
       <Text>
-        Start: {String(speedSetting.start_time).slice(11,16)}  End: {String(speedSetting.end_time).slice(11,16)}  Speed: {speed}
+        Start: {convertToLocalTime(speedSetting.start_time).slice(11,16)}  End: {convertToLocalTime(speedSetting.end_time).slice(11,16)}  Speed: {speed}
       </Text>
       <View className="flex flex-row items-center ml-2 w-[80px] h-10">
         <Button color='red' title="Delete" onPress={handleDelete} />

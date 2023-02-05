@@ -73,7 +73,17 @@ const Settings = ( { navigation } ) => {
     } else {
       await AsyncStorage.setItem('speedUnit', speedUnit);
     }
-    navigation.navigate('Dashboard')
+    // navigation.navigate('Dashboard')
+  };
+
+  const saveUnit = async (unit) => {
+    if (userType === 'A') {
+      await AsyncStorage.setItem('tempUnit', unit);
+      setTempUnit(unit);
+    } else {
+      await AsyncStorage.setItem('speedUnit', unit);
+      setSpeedUnit(unit);
+    }
   };
 
   return (
@@ -84,10 +94,10 @@ const Settings = ( { navigation } ) => {
         <View className="flex flex-row m-4">
         {userType === 'A' &&
           <View className="flex flex-row items-center justify-center">
-            <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
+            <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Fahrenheit')}>
               <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit \u2713' : 'Fahrenheit' }</Text>
             </Pressable>
-            <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Celcius')}>
+            <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Celcius')}>
               <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius \u2713' : 'Celcius' }</Text>
             </Pressable>
           </View>
@@ -95,10 +105,10 @@ const Settings = ( { navigation } ) => {
 
         {userType === 'B' &&
           <View className="flex flex-row items-center justify-center">
-            <Pressable className={` ${speedUnit === 'Labels' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setSpeedUnit('Labels')}>
+            <Pressable className={` ${speedUnit === 'Labels' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Labels')}>
               <Text className="text-white text-lg">{speedUnit === 'Labels' ? 'Labels \u2713' : 'Labels' }</Text>
             </Pressable>
-            <Pressable className={` ${speedUnit === 'Numbers' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setSpeedUnit('Numbers')}>
+            <Pressable className={` ${speedUnit === 'Numbers' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Numbers')}>
               <Text className="text-white text-lg">{speedUnit === 'Numbers' ? 'Numbers \u2713' : 'Numbers' }</Text>
             </Pressable>
           </View>
@@ -108,7 +118,7 @@ const Settings = ( { navigation } ) => {
         <View className="flex flex-col items-center justify-between">
 
           <View className=" w-1/2 flex flex-row justify-evenly items-center m-4">
-            <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" />
+            {/* <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" /> */}
             <Button title="Save" onPress={handleSave} className="m-3  min-w-[100px] h-12"/>
           </View>
         </View>

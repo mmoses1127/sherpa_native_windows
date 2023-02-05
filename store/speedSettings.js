@@ -100,6 +100,8 @@ export const deleteSpeedSetting = (speedSettingId) => async dispatch => {
 };
 
 export const createSpeedSetting = (speedSetting) => async dispatch => {
+  speedSetting.start_time = speedSetting.start_time.toISOString();
+  speedSetting.end_time = speedSetting.end_time.toISOString();
   db.transaction(tx => { 
     tx.executeSql('INSERT INTO speed_settings (start_time, end_time, speed) values (?, ?, ?)', 
     [speedSetting.start_time, speedSetting.end_time, speedSetting.speed],

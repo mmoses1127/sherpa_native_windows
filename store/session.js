@@ -28,11 +28,9 @@ export const sqlLogin = (user) => async (dispatch) => {
   const { email, password } = user;
 
   db.transaction(tx => {
-      console.log('attempting login as', email, password)
       tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?', [email, password],
         (txObj, resultSet) => {
           let data = resultSet.rows._array;
-          console.log(data)
           if (data.length) {
             const targetUser = data[0]
             const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

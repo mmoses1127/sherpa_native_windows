@@ -21,6 +21,7 @@ const AddTemp = () => {
   const [temperature, setTemperature] = useState('');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
+  console.log('addtemp mounted')
 
   useEffect(() => {
 
@@ -101,6 +102,7 @@ const AddTemp = () => {
   return (
 
     <View className="w-full h-full flex flex-col justify-center items-center">
+      <Text>ADDTEMP</Text>
       <View className="flex flex-col justify-center items-center">
         <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
           <View className="flex flex-row items-center justify-start w-full">

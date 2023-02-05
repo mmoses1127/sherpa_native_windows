@@ -5,12 +5,13 @@ import { Button, Text, View, Pressable, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
 import { convertCtoF, convertFtoC, fetchUnit } from "./Settings";
-import formatTime from "./clock" ;
+import formatTime, { convertToLocalTime } from "./clock" ;
 
 
-const EditTemp = ({ navigation, tempItemId }) => {
 
-  // const {tempItemId} = useParams(); 
+const EditTemp = ({route}) => {
+
+  const tempItemId = route.params.itemId;
   const tempSetting = useSelector(getTemperatureSetting(tempItemId));
   const dispatch = useDispatch();
   const [startTime, setStartTime] = useState(new Date());
@@ -18,7 +19,6 @@ const EditTemp = ({ navigation, tempItemId }) => {
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
   const [tempUnit, setTempUnit] = useState('');
-  // const tempUnit = 'F';
   const [temperature, setTemperature] = useState('');
 
   useEffect(() => {
@@ -39,8 +39,8 @@ const EditTemp = ({ navigation, tempItemId }) => {
 
   useEffect(() => {
     if (tempSetting) {
-      setStartTime(new Date(tempSetting.start_time));
-      setEndTime(new Date(tempSetting.end_time));
+      setStartTime(new Date(convertToLocalTime(tempSetting.start_time)));
+      setEndTime(new Date(convertToLocalTime(tempSetting.end_time)));
       setTemperature(tempUnit === 'F' ? String(convertCtoF(tempSetting.temperature)) : String(tempSetting.temperature));
     }
   }, [tempSetting, tempUnit]);
