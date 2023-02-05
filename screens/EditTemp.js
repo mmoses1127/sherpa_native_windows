@@ -14,13 +14,18 @@ const EditTemp = () => {
   const tempSetting = useSelector(getTemperatureSetting(tempItemId));
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [startTime, setStartTime] = useState(new Date('July 1, 1999, 12:00:00'));
-  const [endTime, setEndTime] = useState(new Date('July 1, 1999, 12:00:00'));
+  const [startTime, setStartTime] = useState(new Date(tempSetting.start_time));
+  const [endTime, setEndTime] = useState(new Date(tempSetting.start_time));
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const tempUnit = 'F';
-  const [temperature, setTemperature] = useState(tempSetting.temperature);
+  const [tempUnit, setTempUnit] = useState(tempSetting.temperature);
+  // const tempUnit = 'F';
+  const [temperature, setTemperature] = useState('');
 
+  useEffect(() => {
+    // setTempUnit(getUnit(userType)[0]);
+    setTempUnit('F');
+  }, []);
 
   useEffect(() => {
     dispatch(fetchTemperatureSetting(tempItemId))
@@ -31,13 +36,12 @@ const EditTemp = () => {
     if (tempSetting) {
       setStartTime(new Date(tempSetting.start_time));
       setEndTime(new Date(tempSetting.end_time));
-      setTemperature(tempUnit === 'F' ? convertCtoF(tempSetting.temperature) : tempSetting.temperature);
+      setTemperature(tempUnit === 'F' ? String(convertCtoF(tempSetting.temperature)) : String(tempSetting.temperature));
     }
   }, [tempSetting, tempUnit]);
 
   useEffect(() => {
     if (tempUnit === 'F') {
-      if (temperature < 32) setTemperature(32);
       if (temperature > 212) setTemperature(212);
     } else {
       if (temperature < 0) setTemperature(0);
@@ -80,7 +84,7 @@ const EditTemp = () => {
     
     navigate('/');
 
-  }
+  };
 
   const showClock = (currentMode) => {
     setShow(true);
