@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createSpeedSetting } from "../store/speedSettings";
-import { findSpeedLabel, findUnitCookie } from "./Settings";
-import { Button } from 'react-native';
+import { findSpeedLabel, findUnitCookie, fetchUnit } from "./Settings";
+import { Button, TextInput, View, Text, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Slider } from '@miblanchard/react-native-slider';
 import formatTime from "./clock";
@@ -13,18 +13,27 @@ const AddSpeed = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState(new Date('July 1, 1999, 12:00:00'));
+  const [endTime, setEndTime] = useState(new Date('July 1, 1999, 12:00:00'));
   const [speed, setSpeed] = useState(1);
-  const [speedUnit, setSpeedUnit] = useState('');
+  const [speedUnit, setSpeedUnit] = useState('Labels');
   // const unit = findUnitCookie('speed');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
+  const userType = 'B';
 
   useEffect(() => {
-    // setSpeedUnit(getUnit(userType)[0]);
-    setSpeedUnit('Labels');
-  }, []);
+
+    const setUnit = async () => {
+      console.log('setting unit...')
+      let unit = await fetchUnit(userType);
+      console.log('unit is', unit)
+      setSpeedUnit(unit);
+    }
+
+    setUnit();
+
+  }, [userType]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -45,12 +54,10 @@ const AddSpeed = () => {
       end_time: endTime,
       speed
     }
-    const newItem = dispatch(createSpeedSetting(newSpeedSetting));
-    if (newItem) {
-      navigate('/');
-    } else {
-      alert('Item could not be created')
-    }
+    
+    dispatch(createSpeedSetting(newSpeedSetting));
+    navigate('/');
+
   }
 
   const showClock = (currentMode) => {
@@ -81,7 +88,7 @@ const AddSpeed = () => {
         </Pressable>
       </View>
       <View className="flex flex-row items-center justify-start w-full">
-      <Text className="min-w-[120px]">Speed: {unit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</Text>
+      <Text className="min-w-[120px]">Speed: {speedUnit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</Text>
       <Slider
         value={speed}
         onValueChange={value => setSpeed({value})}
@@ -100,7 +107,3 @@ const AddSpeed = () => {
 }
 
 export default AddSpeed;
-
-
-{/* <label htmlFor="speed" className="speed-setting m-3  flex flex-row justify-between items-center" >Speed: {unit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</label>
-<input onChange={e => setSpeed(e.target.value)}className="bg-blue-500 m-3" type="range" name="speed" id="speed" min="1" max="3" value={speed} /> */}

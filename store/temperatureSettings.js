@@ -114,7 +114,6 @@ export const createTemperatureSetting = (temperatureSetting) => async dispatch =
 };
 
 export const updateTemperatureSetting = (temperatureSetting) => async dispatch => {
-
   db.transaction(tx => {
     console.log('updating temperature setting', temperatureSetting)
     tx.executeSql(

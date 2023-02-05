@@ -68,6 +68,7 @@ const AddTemp = () => {
 
     dispatch(createTemperatureSetting(newTemperatureSetting));
     navigate('/')
+    
   }
 
   const showClock = (currentMode) => {
