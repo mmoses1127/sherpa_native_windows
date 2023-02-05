@@ -37,6 +37,11 @@ const TempItem = ({temperatureSetting}) => {
     navigate(`/temps/${temperatureSetting.id}`)
   };
 
+  const date = new Date(String(temperatureSetting.start_time));
+  const convertedDate = date.toString();
+  console.log('date is', date)
+  console.log('convertedDate is', convertedDate)
+
   return (
     <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-[90%] min-w-[300px]" key={temperatureSetting.id}>
       <Text>Start: {String(temperatureSetting.start_time).slice(11,16)}  End: {String(temperatureSetting.end_time).slice(11,16)}  Temperature: {temp[temp.length - 1] === '0' ? temp.slice(0,-2) : temp}°{tempUnit}</Text>

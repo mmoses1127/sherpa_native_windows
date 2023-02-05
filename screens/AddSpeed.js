@@ -33,6 +33,7 @@ const AddSpeed = () => {
   }, []);
 
   const handleSave = (e) => {
+    console.log('js start end times', startTime, endTime)
     e.preventDefault();
 
     if (!startTime || !endTime || !speed) {
