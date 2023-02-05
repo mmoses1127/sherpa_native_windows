@@ -44,7 +44,7 @@ export const fetchUnit = async (userType) => {
   }
 };
 
-const Settings = ({ navigation }) => {
+const Settings = ( { navigation } ) => {
 
   const userType = useSelector(getUserType)
 
@@ -64,7 +64,7 @@ const Settings = ({ navigation }) => {
   }, [userType]);
   
   const handleCancel = (e) => {
-    navigation.navigate('/dashboard')
+    navigation.navigate('Dashboard')
   };
   
   const handleSave = async () => {
@@ -73,7 +73,7 @@ const Settings = ({ navigation }) => {
     } else {
       await AsyncStorage.setItem('speedUnit', speedUnit);
     }
-    navigation.navigate('/dashboard')
+    navigation.navigate('Dashboard')
   };
 
   return (
@@ -116,18 +116,3 @@ const Settings = ({ navigation }) => {
 }
 
 export default Settings;
-
-
-// {userType === 'A' &&
-// <View className="mb-10">
-// <Button id="farhenheit-button" className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Fahrenheit </Button>
-// <Button id="celcius-button"className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Celcius</Button>
-// </View>
-// }
-
-// {userType === 'B' &&
-// <View className="mb-10">
-// <Button id="numbers-button" className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Numbers</Button>
-// <Button id="labels-button"className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Labels</Button>
-// </View>
-// }

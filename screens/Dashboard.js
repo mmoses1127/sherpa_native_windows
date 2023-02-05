@@ -17,7 +17,6 @@ import Settings from "./Settings";
 
 
 const Dashboard = ( {navigation} ) => {
-  console.log(navigation)
   const db = SQLite.openDatabase('example.db');
   const Tab = createBottomTabNavigator();
 

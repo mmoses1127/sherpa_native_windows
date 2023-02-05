@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Text, View, Pressable, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
@@ -8,12 +8,11 @@ import { convertCtoF, convertFtoC, fetchUnit } from "./Settings";
 import formatTime from "./clock" ;
 
 
-const EditTemp = () => {
+const EditTemp = ({ navigation, tempItemId }) => {
 
-  const {tempItemId} = useParams(); 
+  // const {tempItemId} = useParams(); 
   const tempSetting = useSelector(getTemperatureSetting(tempItemId));
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -105,7 +104,7 @@ const EditTemp = () => {
     
     dispatch(updateTemperatureSetting(updatedTemperatureSetting));
     
-    navigate('/');
+    navigation.navigate('Dashboard');
 
   };
 
@@ -123,31 +122,33 @@ const EditTemp = () => {
 
   return (
 
-    <View className="flex flex-col justify-center items-center">
-      <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
-        <View className="flex flex-row items-center justify-start w-full">
-          <Text className="min-w-[120px]">Start</Text>
-          <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
-            <Text className="text-white">{formatTime(startTime)}</Text>
-          </Pressable>
+    <View className="w-full h-full flex flex-col justify-center items-center">
+      <View className="flex flex-col justify-center items-center">
+        <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
+          <View className="flex flex-row items-center justify-start w-full">
+            <Text className="min-w-[120px]">Start</Text>
+            <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
+              <Text className="text-white">{formatTime(startTime)}</Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row items-center text-white justify-start w-full">
+            <Text className="min-w-[120px]">End</Text>
+            <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
+              <Text className="text-white">{formatTime(endTime)}</Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row items-center justify-start w-full">
+            <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
+            <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' maxLength={5} onChangeText={text => formatTempInput(text)} value={temperature} />
+          </View>
         </View>
-        <View className="flex flex-row items-center text-white justify-start w-full">
-          <Text className="min-w-[120px]">End</Text>
-          <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
-            <Text className="text-white">{formatTime(endTime)}</Text>
-          </Pressable>
-        </View>
-        <View className="flex flex-row items-center justify-start w-full">
-          <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
-          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' maxLength={5} onChangeText={text => formatTempInput(text)} value={temperature} />
-        </View>
-      </View>
 
-      <Button  title="Save" onPress={handleUpdate} />
-      {show && 
-      <DateTimePicker testID="dateTimePicker" value={mode === 'start' ? startTime : endTime} mode={'time'}
-      is24Hour={false} display="default" onChange={handleClockChange} />
-      }
+        <Button  title="Save" onPress={handleUpdate} />
+        {show && 
+        <DateTimePicker testID="dateTimePicker" value={mode === 'start' ? startTime : endTime} mode={'time'}
+        is24Hour={false} display="default" onChange={handleClockChange} />
+        }
+      </View>
     </View>
 
   );

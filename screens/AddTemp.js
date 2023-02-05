@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { createTemperatureSetting, addTemperatureSetting } from "../store/temperatureSettings";
 import { convertFtoC, fetchUnit } from "./Settings";
 import { Button, TextInput, View, Text, Pressable } from 'react-native';
@@ -8,12 +7,14 @@ import { getUnit } from "./Settings";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import formatTime from "./clock" ;
 import * as SQLite from 'expo-sqlite';
+import { useNavigation } from '@react-navigation/native';
+
 
 
 const AddTemp = () => {
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigation = useNavigation();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [tempUnit, setTempUnit] = useState('');
@@ -81,7 +82,7 @@ const AddTemp = () => {
     }
 
     dispatch(createTemperatureSetting(newTemperatureSetting));
-    navigate('/')
+    navigation.navigate('Dashboard')
     
   }
 

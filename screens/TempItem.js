@@ -35,7 +35,7 @@ const TempItem = ( {temperatureSetting} ) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    navigation.navigate(`/temps/${temperatureSetting.id}`)
+    navigation.navigate('EditTemp', {id: temperatureSetting.id})
   };
 
   const date = new Date(String(temperatureSetting.start_time));

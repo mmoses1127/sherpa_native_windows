@@ -4,10 +4,13 @@ import { findSpeedLabel, fetchUnit } from "./Settings";
 import { useEffect, useState } from "react";
 import { Button, Text, View } from 'react-native';
 import { getUserType } from "../store/session";
+import { useNavigation } from '@react-navigation/native';
 
-const SpeedItem = ({speedSetting}, navigation) => {
-  console.log(navigation)
+
+const SpeedItem = ({ speedSetting }) => {
+
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const userType = useSelector(getUserType);
   const [speedUnit, setSpeedUnit] = useState('Labels');
   const speed = speedUnit === 'Labels' ? findSpeedLabel(speedSetting.speed) : speedSetting.speed;
@@ -31,7 +34,7 @@ const SpeedItem = ({speedSetting}, navigation) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    navigation.navigate(`/speeds/${speedSetting.id}`)
+    navigation.navigate('EditSpeed', {id: speedSetting.id})
   };
 
   return (
