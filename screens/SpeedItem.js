@@ -1,13 +1,15 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteSpeedSetting } from "../store/speedSettings";
-import { findUnitCookie, findSpeedLabel, fetchUnit } from "./Settings";
+import { findSpeedLabel, fetchUnit } from "./Settings";
+import { useEffect, useState } from "react";
+import { Button, Text, View } from 'react-native';
 
 const SpeedItem = ({speedSetting}) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userType = 'A';
+  const userType = 'B';
   const [speedUnit, setSpeedUnit] = useState('Labels');
   const speed = speedUnit === 'Labels' ? findSpeedLabel(speedSetting.speed) : speedSetting.speed;
 
@@ -36,8 +38,10 @@ const SpeedItem = ({speedSetting}) => {
   };
 
   return (
-    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-[90%] min-w-[300px]" key={temperatureSetting.id}>
-      <Text>Start: {String(temperatureSetting.start_time).slice(11,16)}  End: {String(temperatureSetting.end_time).slice(11,16)}  Speed: {speed}</Text>
+    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-[90%] min-w-[300px]" key={speedSetting.id}>
+      <Text>
+        Start: {String(speedSetting.start_time).slice(11,16)}  End: {String(speedSetting.end_time).slice(11,16)}  Speed: {speed}
+      </Text>
       <View className="flex flex-row items-center ml-2 w-[80px] h-10">
         <Button color='red' title="Delete" onPress={handleDelete} />
         <Button title="Edit" onPress={handleUpdate} />

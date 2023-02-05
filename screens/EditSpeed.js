@@ -11,11 +11,25 @@ const EditSpeed = () => {
   const speedSetting = useSelector(getSpeedSetting(speedItemId));
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const unit = findUnitCookie();
+  const [startTime, setStartTime] = useState(new Date(speedSetting.start_time));
+  const [endTime, setEndTime] = useState(new Date(speedSetting.start_time));
+  const [show, setShow] = useState(false);
+  const [mode, setMode] = useState('start');
+  const [speedUnit, setSpeedUnit] = useState('Labels');
   const [speed, setSpeed] = useState('');
 
+  useEffect(() => {
+
+    const setUnit = async () => {
+      console.log('setting unit...')
+      let unit = await fetchUnit(userType);
+      console.log('unit is', unit)
+      setSpeedUnit(unit);
+    }
+
+    setUnit();
+
+  }, [userType]);
 
   useEffect(() => {
     dispatch(fetchSpeedSetting(speedItemId))

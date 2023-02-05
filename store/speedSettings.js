@@ -45,7 +45,7 @@ export const getSpeedSetting = speedSettingId => (state) => {
   return state.speedSettings[speedSettingId];
 }
 
-export const fetchspeedSettings = () => async dispatch => {
+export const fetchSpeedSettings = () => async dispatch => {
   db.transaction(tx => {
     tx.executeSql(
       `select * from speed_settings`,

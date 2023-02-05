@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { deleteTemperatureSetting, sqlDeleteTemperatureSetting } from "../store/temperatureSettings";
 import { findUnitCookie, convertCtoF, fetchUnit } from "./Settings";
 import { Button, Text, View } from 'react-native';
-import * as SQLite from 'expo-sqlite';
 import { useEffect, useState } from "react";
 
 

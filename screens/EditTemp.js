@@ -18,14 +18,22 @@ const EditTemp = () => {
   const [endTime, setEndTime] = useState(new Date(tempSetting.start_time));
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const [tempUnit, setTempUnit] = useState(tempSetting.temperature);
+  const [tempUnit, setTempUnit] = useState('Fahrenheit');
   // const tempUnit = 'F';
   const [temperature, setTemperature] = useState('');
 
   useEffect(() => {
-    // setTempUnit(getUnit(userType)[0]);
-    setTempUnit('F');
-  }, []);
+
+    const setUnit = async () => {
+      console.log('setting unit...')
+      let unit = await fetchUnit(userType);
+      console.log('unit is', unit)
+      setTempUnit(unit[0]);
+    }
+
+    setUnit();
+
+  }, [userType]);
 
   useEffect(() => {
     dispatch(fetchTemperatureSetting(tempItemId))

@@ -28,11 +28,10 @@ const Dashboard = () => {
   useEffect(() => {
     
   if (userType === 'A') {
-    
     dispatch(fetchTemperatureSettings());
-    } else {
-      // dispatch(fetchSpeedSettings());
-    }
+  } else {
+    dispatch(fetchSpeedSettings());
+  }
 
   }, [dispatch]);
 

@@ -7,6 +7,7 @@ import Dashboard from './screens/Dashboard';
 import AddSetting from './screens/AddSetting';
 import Settings from './screens/Settings';
 import EditTemp from './screens/EditTemp';
+import EditSpeed from './screens/EditSpeed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import * as SQLite from 'expo-sqlite';
@@ -61,10 +62,13 @@ const App = () => {
   useEffect(() => {
     console.log('loading db', db)
     db.transaction(tx => {
-      console.log('creating table...')
+      console.log('creating tables...')
+      // tx.executeSql('DROP TABLE IF EXISTS users');
+      // tx.executeSql('DROP TABLE IF EXISTS temperature_settings');
+      // tx.executeSql('DROP TABLE IF EXISTS speed_settings');
       tx.executeSql('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, user_type TEXT)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS temperature_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, speed INTEGER)');
     });
 
     // db.transaction(tx => {
@@ -130,7 +134,7 @@ const App = () => {
           <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
           <Route exact path="/add-setting" element={user ? <AddSetting db={db}/> : <Login />} />
           <Route exact path="/temps/:tempItemId" element={user ? <EditTemp /> : <Login />} />
-          {/* <Route exact path="/speeds/:speedItemId" element={0 ? <Login /> : <EditSpeed />} /> */}
+          <Route exact path="/speeds/:speedItemId" element={user ? <EditSpeed /> : <Login />} />
           <Route exact path="/settings" element={user ? <Settings /> : <Login />} />
         </Routes>
       </View>
