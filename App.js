@@ -6,6 +6,7 @@ import Login from './screens/Login';
 import Dashboard from './screens/Dashboard';
 import AddSetting from './screens/AddSetting';
 import Settings from './screens/Settings';
+import EditTemp from './screens/EditTemp';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import * as SQLite from 'expo-sqlite';
@@ -18,13 +19,11 @@ import { getCurrentUser } from './store/session';
 const App = () => {
 
   const db = SQLite.openDatabase('example.db');
-  console.log('db in app is', db)
   const [isLoading, setIsLoading] = useState(true);
   // const [users, setUsers] = useState([]);
   // const user = useSelector(getCurrentUser);
   const user = 'A';
   const state = useSelector(state => state);
-  console.log(state)
 
   const exportDB = async () => {
     await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
@@ -88,16 +87,16 @@ const App = () => {
     //   );
     // });
 
-    db.transaction(tx => {
-      console.log('selecting users...')
-      tx.executeSql('SELECT * FROM users', null,
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-          // setUsers(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
+    // db.transaction(tx => {
+    //   console.log('selecting users...')
+    //   tx.executeSql('SELECT * FROM users', null,
+    //     (txObj, resultSet) => {
+    //       console.log(resultSet.rows._array)
+    //       // setUsers(resultSet.rows._array)
+    //     },
+    //     (txObj, error) => console.log(error)
+    //   );
+    // });
 
     setIsLoading(false);
 
@@ -112,7 +111,14 @@ const App = () => {
   //   })
   // }
 
-  console.log(user)
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    )
+  }
+
 
   return (
     <NativeRouter>

@@ -110,6 +110,7 @@ const AddTemp = () => {
       is24Hour={false} display="default" onChange={handleClockChange} />
       }
     </View>
+    
   );
 
 }
