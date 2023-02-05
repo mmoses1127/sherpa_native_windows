@@ -25,38 +25,38 @@ const App = () => {
   const user = 'A';
   const state = useSelector(state => state);
 
-  const exportDB = async () => {
-    await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
-  };
+  // const exportDB = async () => {
+  //   await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
+  // };
 
-  const importDb = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      copyTocacheDirectory: true
-    });
+  // const importDb = async () => {
+  //   let result = await DocumentPicker.getDocumentAsync({
+  //     copyTocacheDirectory: true
+  //   });
 
-    if (result.type === 'success') {
-      setIsLoading(true);
+  //   if (result.type === 'success') {
+  //     setIsLoading(true);
 
-      if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
-      }
+  //     if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
+  //       await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
+  //     }
 
-      const base64 = await FileSystem.readAsStringAsync(
-        result.uri, 
-        { encoding: FileSystem.EncodingType.Base64 } 
-      );
+  //     const base64 = await FileSystem.readAsStringAsync(
+  //       result.uri, 
+  //       { encoding: FileSystem.EncodingType.Base64 } 
+  //     );
 
-      await FileSystem.writeAsStringAsync(FileSystem.documentDirectory 
-        + 'SQLite/example.db', 
-        base64, 
-        { encoding: FileSystem.EncodingType.Base64 
-        }
-      );
+  //     await FileSystem.writeAsStringAsync(FileSystem.documentDirectory 
+  //       + 'SQLite/example.db', 
+  //       base64, 
+  //       { encoding: FileSystem.EncodingType.Base64 
+  //       }
+  //     );
 
-      await db.closeAsync();
-      setDb(SQLite.openDatabase('example.db'));
-    }
-  };
+  //     await db.closeAsync();
+  //     setDb(SQLite.openDatabase('example.db'));
+  //   }
+  // };
 
   useEffect(() => {
     console.log('loading db', db)
@@ -123,8 +123,8 @@ const App = () => {
   return (
     <NativeRouter>
       <View style={styles.container}>
-        <Button title="Export DB" onPress={exportDB} />
-        <Button title="Import DB" onPress={importDb} />
+        {/* <Button title="Export DB" onPress={exportDB} />
+        <Button title="Import DB" onPress={importDb} /> */}
         <Routes>
           <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
           <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />

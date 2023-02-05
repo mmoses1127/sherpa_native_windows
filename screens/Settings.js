@@ -5,17 +5,6 @@ import { getCurrentUser } from "../store/session";
 import { View, Button, Text, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const findUnitCookie = (type) => {
-  // const targetCookie = type === 'temp' ? 'tempUnit' : 'speedUnit';
-  // const cookies = document.cookie.split(';');
-  // for (let i = 0; i < cookies.length; i++) {
-  //   const cookie = cookies[i].split('=');
-  //   if (cookie[0].trim() === targetCookie) {
-  //     return cookie[1];
-  //   }
-  // }
-  // return 'Fahrenheit';
-};
 
 export const convertCtoF = (temp) => {
   return Math.round(((temp * 9/5) + 32) * 10) / 10;
@@ -39,22 +28,21 @@ export const findSpeedLabel = (speedNumber) => {
   }
 }
 
-export const getUnit = async (userType, setTempUnit, setSpeedUnit) => {
+export const fetchUnit = async (userType) => {
+  let unit;
   if (userType === 'A') {
-    let unit = await AsyncStorage.getItem('tempUnit');
+    unit = await AsyncStorage.getItem('tempUnit');
     if (unit) {
-      setTempUnit(unit);
+      return unit ? unit : 'Fahrenheit';
     }
   } else {
-    let unit = await AsyncStorage.getItem('speedUnit');
+    unit = await AsyncStorage.getItem('speedUnit');
     if (unit) {
-      setSpeedUnit(unit);
+      return unit ? unit : 'Numbers';
     }
   }
   console.log('unit is', unit)
 };
-
-export const yoooo = () => 5;
 
 const Settings = () => {
 
@@ -67,9 +55,17 @@ const Settings = () => {
 
 
   useEffect(() => {
-    console.log('setting unit to')
-    getUnit(userType, setTempUnit, setSpeedUnit);
-  }, []);
+
+    const setUnit = async () => {
+      console.log('setting unit...')
+      let unit = await fetchUnit(userType);
+      console.log('unit is', unit)
+      userType === 'A' ? setTempUnit(unit) : setSpeedUnit(unit);
+    }
+
+    setUnit();
+
+  }, [userType]);
   
   const handleCancel = (e) => {
     navigate('/dashboard')
@@ -78,19 +74,16 @@ const Settings = () => {
   const handleSave = async () => {
     if (userType === 'A') {
       await AsyncStorage.setItem('tempUnit', tempUnit);
-      // let item = await AsyncStorage.getItem('tempUnit');
-      // console.log(item);
-      // document.cookie = `tempUnit=${tempUnit}; path=/; max-age=31536000; SameSite=Lax; Secure;`
+      console.log('tempUnit set to ', tempUnit);
     } else {
-      AsyncStorage.setItem('speedUnit', speedUnit);
-      // document.cookie = `speedUnit=${speedUnit}; path=/; max-age=31536000; SameSite=Lax; Secure;`
+      await AsyncStorage.setItem('speedUnit', speedUnit);
+      console.log('speedUnit set to ', speedUnit);
     }
     navigate('/dashboard')
   };
 
   return (
-    <View className='flex flex-col justify-start items-center w-full'>
-      <Text>{tempUnit}</Text>
+    <View className='flex flex-col justify-center items-center w-full'>
       <Text className='text-xl mb-10'>{userType === 'A' ? 'Select Temperature Units' : 'Select Intensity Display Mode'}</Text>
       <View className="flex flex-row m-4">
       <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
@@ -100,7 +93,7 @@ const Settings = () => {
         <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius X' : 'Celcius' }</Text>
       </Pressable>
       </View>
-      <View className="h-3/4 flex flex-col items-center justify-between">
+      <View className="flex flex-col items-center justify-between">
 
         <View className=" w-1/2 flex flex-row justify-evenly items-center m-4">
           <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" />
