@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../store/session";
 import { View, Button, Text, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,9 +44,8 @@ export const fetchUnit = async (userType) => {
   }
 };
 
-const Settings = () => {
+const Settings = ({ navigation }) => {
 
-  const navigate = useNavigate();
   const userType = useSelector(getUserType)
 
   const [tempUnit, setTempUnit] = useState('Fahrenheit');
@@ -66,7 +64,7 @@ const Settings = () => {
   }, [userType]);
   
   const handleCancel = (e) => {
-    navigate('/dashboard')
+    navigation.navigate('/dashboard')
   };
   
   const handleSave = async () => {
@@ -75,7 +73,7 @@ const Settings = () => {
     } else {
       await AsyncStorage.setItem('speedUnit', speedUnit);
     }
-    navigate('/dashboard')
+    navigation.navigate('/dashboard')
   };
 
   return (

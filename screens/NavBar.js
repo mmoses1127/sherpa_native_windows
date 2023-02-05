@@ -1,20 +1,18 @@
 import { logout } from '../store/session';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-native';
 import { Button } from 'react-native';
 import { View, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 
-const Navigation = () => {
+const NavBar = ({ navigation }) => {
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const state = useSelector(state => state);
 
   const handleLogout = async () => {
     await dispatch(logout());
-    navigate('/'); 
+    navigation.navigate('Login'); 
   };
 
   return (
@@ -25,4 +23,4 @@ const Navigation = () => {
   )
 }
 
-export default Navigation;
+export default NavBar;

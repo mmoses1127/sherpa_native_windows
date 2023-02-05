@@ -15,7 +15,8 @@ import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { getCurrentUser } from './store/session';
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const App = () => {
 
@@ -121,23 +122,37 @@ const App = () => {
     )
   }
 
+  const Stack = createNativeStackNavigator();
 
   return (
-    <NativeRouter>
-      <View style={styles.container}>
-        {/* <Button title="Export DB" onPress={exportDB} />
-        <Button title="Import DB" onPress={importDb} /> */}
-        <Routes>
-          <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
-          <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
-          <Route exact path="/add-setting" element={user ? <AddSetting /> : <Login />} />
-          <Route exact path="/temps/:tempItemId" element={user ? <EditTemp /> : <Login />} />
-          <Route exact path="/speeds/:speedItemId" element={user ? <EditSpeed /> : <Login />} />
-          <Route exact path="/settings" element={user ? <Settings /> : <Login />} />
-        </Routes>
-      </View>
-    </NativeRouter>
-  );
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Login'>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="AddSetting" component={AddSetting} />
+        <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="EditTemp" component={EditTemp} />
+        <Stack.Screen name="EditSpeed" component={EditSpeed} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+
+  // return (
+  //   <NativeRouter>
+  //     <View style={styles.container}>
+  //       {/* <Button title="Export DB" onPress={exportDB} />
+  //       <Button title="Import DB" onPress={importDb} /> */}
+  //       <Routes>
+  //         <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
+  //         <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
+  //         <Route exact path="/add-setting" element={user ? <AddSetting /> : <Login />} />
+  //         <Route exact path="/temps/:tempItemId" element={user ? <EditTemp /> : <Login />} />
+  //         <Route exact path="/speeds/:speedItemId" element={user ? <EditSpeed /> : <Login />} />
+  //         <Route exact path="/settings" element={user ? <Settings /> : <Login />} />
+  //       </Routes>
+  //     </View>
+  //   </NativeRouter>
+  // );
 }
 
 const styles = StyleSheet.create({

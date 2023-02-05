@@ -1,15 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { deleteSpeedSetting } from "../store/speedSettings";
 import { findSpeedLabel, fetchUnit } from "./Settings";
 import { useEffect, useState } from "react";
 import { Button, Text, View } from 'react-native';
 import { getUserType } from "../store/session";
 
-const SpeedItem = ({speedSetting}) => {
-
+const SpeedItem = ({speedSetting}, navigation) => {
+  console.log(navigation)
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const userType = useSelector(getUserType);
   const [speedUnit, setSpeedUnit] = useState('Labels');
   const speed = speedUnit === 'Labels' ? findSpeedLabel(speedSetting.speed) : speedSetting.speed;
@@ -33,7 +31,7 @@ const SpeedItem = ({speedSetting}) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    navigate(`/speeds/${speedSetting.id}`)
+    navigation.navigate(`/speeds/${speedSetting.id}`)
   };
 
   return (
