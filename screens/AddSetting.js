@@ -5,6 +5,8 @@ import AddSpeed from "./AddSpeed";
 import { View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Settings from "./Settings";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 const AddSetting = () => {
@@ -16,8 +18,25 @@ const AddSetting = () => {
   return (
 
       <Tab.Navigator>
-        {userType === 'A' ? <Tab.Screen name="Add Temp" component={AddTemp} /> : <Tab.Screen name="Add Item" component={AddSpeed} />}
-        <Tab.Screen name="Settings" component={Settings} />
+        {userType === 'A' ? <Tab.Screen name="Add Temp" component={AddTemp} options={{
+          tabBarLabel: 'Add Item',
+          tabBarIcon: () => (
+            <Icon name='plus' size={30} color='blue' />
+          ),
+        }}
+        /> : <Tab.Screen name="Add Speed" component={AddSpeed} options={{
+          tabBarLabel: 'Add Item',
+          tabBarIcon: () => (
+            <Icon name='plus' size={30} color='blue' />
+          ),
+        }}
+        />}
+        <Tab.Screen name="Settings" component={Settings} options={{
+          tabBarLabel: 'Settings',
+          tabBarIcon: () => (
+            <Icon name='gear' size={30} color='blue' />
+          ),
+        }}/>
       </Tab.Navigator>
 
   )
