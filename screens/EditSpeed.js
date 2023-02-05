@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { findSpeedLabel } from "./Settings";
+import { findSpeedLabel, fetchUnit } from "./Settings";
 import formatTime from "./clock";
 import { Button, Text, View, Pressable, TextInput } from "react-native";
 import { getSpeedSetting, fetchSpeedSetting, updateSpeedSetting } from "../store/speedSettings";
 import { Slider } from '@miblanchard/react-native-slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-
 
 
 const EditSpeed = () => {

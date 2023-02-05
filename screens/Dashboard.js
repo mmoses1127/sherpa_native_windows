@@ -11,6 +11,7 @@ import Navigation from "./Navigation";
 import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SQLite from 'expo-sqlite';
+import { getUserType } from "../store/session";
 
 
 const Dashboard = () => {
@@ -20,8 +21,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const speedSettings = useSelector(getSpeedSettings);
-  // const userType = useSelector(getCurrentUser).user_type;
-  const userType = 'B'
+  const userType = useSelector(getUserType);
+  // const userType = 'B'
   const temperatureSettings = useSelector(getTemperatureSettings);
   // const [temperatureSettings, setTemperatureSettings] = useState([]);
 

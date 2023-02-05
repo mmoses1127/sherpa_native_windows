@@ -1,13 +1,12 @@
 import { useSelector } from "react-redux";
-import { getCurrentUser } from "../store/session";
+import { getCurrentUser, getUserType } from "../store/session";
 import AddTemp from "./AddTemp";
 import AddSpeed from "./AddSpeed";
 
 
 const AddSetting = () => {
 
-  // const userType = useSelector(getCurrentUser).user_type;
-  const userType = 'B';
+  const userType = useSelector(getUserType);
 
   if (userType ==='A') {
     return <AddTemp/>

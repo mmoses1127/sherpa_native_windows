@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../store/session";
 import { View, Button, Text, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserType } from "../store/session";
+
 
 
 export const convertCtoF = (temp) => {
@@ -46,8 +48,7 @@ export const fetchUnit = async (userType) => {
 const Settings = () => {
 
   const navigate = useNavigate();
-  // const userType = useSelector(getCurrentUser).userType;
-  const userType = 'B';
+  const userType = useSelector(getUserType)
 
   const [tempUnit, setTempUnit] = useState('Fahrenheit');
   const [speedUnit, setSpeedUnit] = useState('Numbers');
@@ -82,7 +83,7 @@ const Settings = () => {
       <Text className='text-xl mb-10'>{userType === 'A' ? 'Select Temperature Units' : 'Select Intensity Display Mode'}</Text>
       <View className="flex flex-row m-4">
       {userType === 'A' &&
-        <View>
+        <View className="flex flex-row items-center justify-center">
           <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
             <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit X' : 'Fahrenheit' }</Text>
           </Pressable>

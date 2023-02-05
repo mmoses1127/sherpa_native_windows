@@ -22,9 +22,7 @@ const App = () => {
   const db = SQLite.openDatabase('example.db');
   const [isLoading, setIsLoading] = useState(true);
   // const [users, setUsers] = useState([]);
-  // const user = useSelector(getCurrentUser);
-  const user = 'B';
-  const state = useSelector(state => state);
+  const user = useSelector(getCurrentUser);
 
   // const exportDB = async () => {
   //   await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
@@ -132,7 +130,7 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
           <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
-          <Route exact path="/add-setting" element={user ? <AddSetting db={db}/> : <Login />} />
+          <Route exact path="/add-setting" element={user ? <AddSetting /> : <Login />} />
           <Route exact path="/temps/:tempItemId" element={user ? <EditTemp /> : <Login />} />
           <Route exact path="/speeds/:speedItemId" element={user ? <EditSpeed /> : <Login />} />
           <Route exact path="/settings" element={user ? <Settings /> : <Login />} />

@@ -16,6 +16,14 @@ export const getCurrentUser = (state = {}) => {
   }
 }
 
+export const getUserType = (state = {}) => {
+  if (state.session && state.session.user) {
+    return state.session.user.user_type;
+  } else {
+    return null;
+  }
+};
+
 export const sqlLogin = (user) => async (dispatch) => {
   const { email, password } = user;
 

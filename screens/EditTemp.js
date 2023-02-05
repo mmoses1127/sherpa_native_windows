@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, Text, View, Pressable, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
-import { convertCtoF, convertFtoC, findUnitCookie } from "./Settings";
+import { convertCtoF, convertFtoC, fetchUnit } from "./Settings";
 import formatTime from "./clock" ;
 
 
@@ -18,7 +18,7 @@ const EditTemp = () => {
   const [endTime, setEndTime] = useState(new Date(tempSetting.start_time));
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const [tempUnit, setTempUnit] = useState('Fahrenheit');
+  const [tempUnit, setTempUnit] = useState('');
   // const tempUnit = 'F';
   const [temperature, setTemperature] = useState('');
 
@@ -55,6 +55,15 @@ const EditTemp = () => {
     }
   }, [temperature, tempUnit]);
 
+  const formatTempInput = (temperature) => {
+    let splitTemp = temperature.split('.');
+    if (splitTemp.length > 2 || temperature.includes(',')) {
+      setTemperature(temperature.slice(0, temperature.length - 1));
+    } else {
+      setTemperature(temperature);
+    }
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -66,6 +75,15 @@ const EditTemp = () => {
     if (startTime >= endTime) {
       alert('Start time must be before end time')
       return;
+    }
+
+    let splitTemp = temperature.split('.');
+    if (splitTemp.length > 2) {
+      setTemperature(splitTemp.slice(0,2))
+    };
+
+    if (temperature.includes(',')) {
+      setTemperature(temperature.replace(','));
     }
 
     if (tempUnit === 'F' && (temperature < 32 || temperature > 212)) {
@@ -121,7 +139,7 @@ const EditTemp = () => {
         </View>
         <View className="flex flex-row items-center justify-start w-full">
           <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
-          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' onChangeText={text => setTemperature(text)} value={temperature} />
+          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' maxLength={5} onChangeText={text => formatTempInput(text)} value={temperature} />
         </View>
       </View>
 

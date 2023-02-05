@@ -1,16 +1,18 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteTemperatureSetting, sqlDeleteTemperatureSetting } from "../store/temperatureSettings";
 import { convertCtoF, fetchUnit } from "./Settings";
 import { Button, Text, View } from 'react-native';
 import { useEffect, useState } from "react";
+import { getUserType } from "../store/session";
+
 
 
 const TempItem = ({temperatureSetting}) => {
     
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userType = 'A';
+  const userType = useSelector(getUserType);
   const [tempUnit, setTempUnit] = useState('F');
   const temp = tempUnit === 'F' ? convertCtoF(temperatureSetting.temperature) : temperatureSetting.temperature;
 

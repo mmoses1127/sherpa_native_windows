@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createTemperatureSetting, addTemperatureSetting } from "../store/temperatureSettings";
-import { convertFtoC, findUnitCookie } from "./Settings";
+import { convertFtoC, fetchUnit } from "./Settings";
 import { Button, TextInput, View, Text, Pressable } from 'react-native';
 import { getUnit } from "./Settings";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -17,7 +17,7 @@ const AddTemp = () => {
   const [startTime, setStartTime] = useState(new Date('July 1, 1999, 12:00:00'));
   const [endTime, setEndTime] = useState(new Date('July 1, 1999, 12:00:00'));
   const [tempUnit, setTempUnit] = useState('');
-  const [temperature, setTemperature] = useState('Fahrenheit');
+  const [temperature, setTemperature] = useState('');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
 
@@ -40,6 +40,15 @@ const AddTemp = () => {
       if (temperature > 100) setTemperature(100);
     }
   }, [temperature, tempUnit]);
+
+  const formatTempInput = (temperature) => {
+    let splitTemp = temperature.split('.');
+    if (splitTemp.length > 2 || temperature.includes(',')) {
+      setTemperature(temperature.slice(0, temperature.length - 1));
+    } else {
+      setTemperature(temperature);
+    }
+  };
 
 
   const handleSave = (e) => {
@@ -106,7 +115,7 @@ const AddTemp = () => {
         </View>
         <View className="flex flex-row items-center justify-start w-full">
           <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
-          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' onChangeText={text => setTemperature(text)} value={temperature} />
+          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' maxLength={5} onChangeText={text => formatTempInput(text)} value={temperature} />
         </View>
       </View>
 
