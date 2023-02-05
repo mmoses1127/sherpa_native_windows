@@ -13,9 +13,8 @@ const Login = ( {navigation} ) => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
 
-  const handleLogin = (email, password) => {
+  const handleLogin = async (email, password) => {
     dispatch(sessionActions.sqlLogin({email, password}));
-    navigation.navigate('Dashboard');
   }
 
   return (

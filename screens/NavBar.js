@@ -2,7 +2,6 @@ import { logout } from '../store/session';
 import { useDispatch } from 'react-redux';
 import { Button } from 'react-native';
 import { View, Text } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 

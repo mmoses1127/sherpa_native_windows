@@ -35,10 +35,11 @@ export const sqlLogin = (user) => async (dispatch) => {
           console.log(data)
           if (data.length) {
             const targetUser = data[0]
-            storeCurrentUser(targetUser);
+            const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            storeCurrentUser(targetUser, sessionToken);
             dispatch(addCurrentUser(targetUser));
           } else {
-            console.log('incorrect email or password')
+            alert('incorrect email or password')
           }
         },
         (txObj, error) => console.log(error)
@@ -47,7 +48,7 @@ export const sqlLogin = (user) => async (dispatch) => {
   };
 
 export const logout = () => async dispatch => {
-  storeCurrentUser(null);
+  storeCurrentUser(null, null);
   dispatch(removeCurrentUser());;
 }
 
@@ -64,55 +65,61 @@ export const removeCurrentUser = () => {
   });
 };
 
-// export const restoreSession = () => async dispatch => {
-//   let res = await csrfFetch('/api/session');
-//   storeCSRFToken(res);
-//   let data = await res.json();
-//   storeCurrentUser(data.user);
-//   dispatch(addCurrentUser(data.user));
-//   return res;
-// }
+export const findUserByToken = (token) => async dispatch => {
+  const user = await db.transaction(tx => {
+    db.executeSql('SELECT * FROM users WHERE session_token = ? AND session_token IS NOT NULL', [token],
+      (txObj, resultSet) => {
+        let data = resultSet.rows._array;
+        if (data.length) {
+          targetUser = data[0];
+          return user;
+        } else {
+          return null;
+        }
+      },
+      (txObj, error) => console.log(error)
+    );
+  });
+}
 
-export const storeCurrentUser = async (user) => {
+
+export const restoreSession = () => async dispatch => {
+  // Search for the token in storage
+    const token = await AsyncStorage.getItem("sessionToken");
+  // search for a user with given token
+    const user = await findUserByToken(token);
+
+  // if token is found, log the user in
+    if (user) {
+      storeCurrentUser(user, token);
+      dispatch(addCurrentUser(user)); 
+    }
+}
+
+export const storeCurrentUser = async (user, sessionToken) => {
   if (user) {
-    await AsyncStorage.setItem('currentUser', JSON.stringify(user));
+    await AsyncStorage.setItem('sessionToken', sessionToken);
+    db.transaction(tx => {
+      tx.executeSql('UPDATE users SET session_token = ? WHERE id = ?', [sessionToken, user.id], 
+        (txObj, resultSet) => {
+          console.log('updated user with session token')
+          },
+        (txObj, error) => console.log(error)
+      );
+    });
+
   } else {
-    await AsyncStorage.removeItem("currentUser");
+    await AsyncStorage.removeItem("sessionToken");
   }
 };
 
-// export const storeCSRFToken = async (res) => {
-//   const token = res.headers.get('X-CSRF-Token');
-//   if (token) await AsyncStorage.setItem('X-CSRF-Token', token);
-// };
-
-// export const login = (user) => async (dispatch) => {
-//   const { email, password } = user;
-//   let res = await csrfFetch('/api/session', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       email,
-//       password
-//     })
-//   });
-//   if (res.ok) {
-//     let data = await res.json();
-//     storeCurrentUser(data)
-//     dispatch(addCurrentUser(data));
-//     return res;
-//   } else {
-//     return ({error: 'We are unable to log you in. Please try again. If the problem persists, contact an administrator.'})
-//   }
-// }
-
-
-
+let user;
 let initialState = {};
 
 const fixUser = async () => {
-  let user = await AsyncStorage.getItem("currentUser");
-  user ||= null;
-  initialState = { 'user': user};
+  let token = await AsyncStorage.getItem("sessionToken");
+  user = await findUserByToken(token);
+  initialState = { user: user};
 }
 
 fixUser();

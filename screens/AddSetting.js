@@ -16,7 +16,7 @@ const AddSetting = () => {
   return (
 
       <Tab.Navigator>
-        {userType === 'A' ? <Tab.Screen name="AddTemp" component={AddTemp} /> : <Tab.Screen name="AddItem" component={AddTemp} />}
+        {userType === 'A' ? <Tab.Screen name="Add Temp" component={AddTemp} /> : <Tab.Screen name="Add Item" component={AddSpeed} />}
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
 

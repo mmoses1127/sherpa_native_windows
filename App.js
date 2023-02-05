@@ -8,7 +8,6 @@ import AddSetting from './screens/AddSetting';
 import Settings from './screens/Settings';
 import EditTemp from './screens/EditTemp';
 import EditSpeed from './screens/EditSpeed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import * as SQLite from 'expo-sqlite';
 import * as Sharing from 'expo-sharing';
@@ -24,7 +23,6 @@ const App = () => {
 
   const db = SQLite.openDatabase('example.db');
   const [isLoading, setIsLoading] = useState(true);
-  // const [users, setUsers] = useState([]);
   const user = useSelector(getCurrentUser);
   const Tab = createBottomTabNavigator();
 
@@ -32,45 +30,50 @@ const App = () => {
   useEffect(() => {
     console.log('loading db', db)
     db.transaction(tx => {
-      console.log('creating tables...')
+      // console.log('dropping tables...')
       // tx.executeSql('DROP TABLE IF EXISTS users');
       // tx.executeSql('DROP TABLE IF EXISTS temperature_settings');
       // tx.executeSql('DROP TABLE IF EXISTS speed_settings');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, user_type TEXT)');
+      console.log('creating tables if not exist...')
+      tx.executeSql('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, user_type TEXT, session_token TEXT)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS temperature_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, speed INTEGER)');
     });
 
-    // db.transaction(tx => {
-    //   console.log('adding user a...')
-    //   tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['a@test.io', 'password', 'A'],
-    //     (txObj, resultSet) => {
-    //       console.log(resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
+    
+    
+    db.transaction(tx => {
+      console.log('selecting users...')
+      tx.executeSql('SELECT * FROM users WHERE email = ? OR email = ?', ["a@test.io", "b@test.io"],
+      (txObj, resultSet) => {
+        console.log(resultSet.rows._array)
+        if (resultSet.rows._array.length < 2) {
+          console.log('populating users...');
+          
+          db.transaction(tx => {
+            console.log('adding user A...')
+            tx.executeSql('INSERT INTO users (email, password, user_type, session_token) values (?, ?, ?, ?)', ['a@test.io', 'password', 'A', null],
+            (txObj, resultSet) => {
+              console.log(resultSet.rows._array)
+            },
+            (txObj, error) => console.log(error)
+            );
+          });
 
-    // db.transaction(tx => {
-    //   console.log('adding user b...')
-    //   tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['b@test.io', 'password', 'B'],
-    //     (txObj, resultSet) => {
-    //       console.log(resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
-
-    // db.transaction(tx => {
-    //   console.log('selecting users...')
-    //   tx.executeSql('SELECT * FROM users', null,
-    //     (txObj, resultSet) => {
-    //       console.log(resultSet.rows._array)
-    //       // setUsers(resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
+          db.transaction(tx => {
+              console.log('adding user B...')
+              tx.executeSql('INSERT INTO users (email, password, user_type, session_token) values (?, ?, ?, ?)', ['b@test.io', 'password', 'B', null],
+                (txObj, resultSet) => {
+                    console.log(resultSet.rows._array)
+                  },
+                  (txObj, error) => console.log(error)
+            );
+          });
+        }
+      },
+      (txObj, error) => console.log(error)
+      );
+    });
 
     setIsLoading(false);
 
@@ -88,13 +91,18 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Login'>
+      <Stack.Navigator initialRouteName='Dashboard'>
+        {user ? (
+        <>
+          <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="AddSetting" component={AddSetting} options={{ headerShown: false }}/>
+          <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name="EditTemp" component={EditTemp} />
+          <Stack.Screen name="EditSpeed" component={EditSpeed} />
+        </>
+        ) : (
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="AddSetting" component={AddSetting} options={{ headerShown: false }}/>
-        <Stack.Screen name="Settings" component={Settings} />
-        <Stack.Screen name="EditTemp" component={EditTemp} />
-        <Stack.Screen name="EditSpeed" component={EditSpeed} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   )
