@@ -102,11 +102,15 @@ const EditSpeed = () => {
           </Pressable>
         </View>
         <View className="flex flex-row items-center justify-start w-full">
-      <Text className="min-w-[120px]">Speed: {speedUnit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</Text>
-      <Slider
-        value={speed}
-        onValueChange={value => setSpeed({value})}
-      />
+        <Text className="min-w-[120px]">Speed: {speedUnit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</Text>
+        <Slider
+          containerStyle={{width: 150, height: 40}}
+          minimumValue={1}
+          maximumValue={3}
+          step={1}
+          value={speed}
+          onValueChange={value => setSpeed(String(value))}
+        />
       </View>
       </View>
 

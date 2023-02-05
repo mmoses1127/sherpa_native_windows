@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteTemperatureSetting, sqlDeleteTemperatureSetting } from "../store/temperatureSettings";
-import { findUnitCookie, convertCtoF, fetchUnit } from "./Settings";
+import { convertCtoF, fetchUnit } from "./Settings";
 import { Button, Text, View } from 'react-native';
 import { useEffect, useState } from "react";
 
