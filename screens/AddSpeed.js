@@ -72,30 +72,32 @@ const AddSpeed = () => {
 
   return (
 
-  <View className="flex flex-col justify-center items-center">
-    <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
-      <View className="flex flex-row items-center justify-start w-full">
-        <Text className="min-w-[120px]">Start</Text>
-        <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
-          <Text className="text-white">{startTime === '' ? startTime : formatTime(startTime)}</Text>
-        </Pressable>
-      </View>
-      <View className="flex flex-row items-center text-white justify-start w-full">
-        <Text className="min-w-[120px]">End</Text>
-        <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
-          <Text className="text-white">{endTime === '' ? endTime : formatTime(endTime)}</Text>
-        </Pressable>
-      </View>
-      <View className="flex flex-row items-center justify-start w-full">
-      <Text className="min-w-[120px]">Speed: {speedUnit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</Text>
-      <Slider
-      containerStyle={{width: 150, height: 40}}
-        minimumValue={1}
-        maximumValue={3}
-        step={1}
-        value={speed}
-        onValueChange={value => setSpeed(String(value))}
-      />
+    <View className="w-full h-full flex flex-col justify-center items-center">
+      <View className="flex flex-col justify-center items-center">
+        <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
+          <View className="flex flex-row items-center justify-start w-full">
+            <Text className="min-w-[120px]">Start</Text>
+            <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
+              <Text className="text-white">{startTime === '' ? startTime : formatTime(startTime)}</Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row items-center text-white justify-start w-full">
+            <Text className="min-w-[120px]">End</Text>
+            <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
+              <Text className="text-white">{endTime === '' ? endTime : formatTime(endTime)}</Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row items-center justify-start w-full">
+          <Text className="min-w-[120px]">Speed: {speedUnit === 'Labels' ? findSpeedLabel(parseInt(speed)) : speed}</Text>
+          <Slider
+          containerStyle={{width: 150, height: 40}}
+            minimumValue={1}
+            maximumValue={3}
+            step={1}
+            value={speed}
+            onValueChange={value => setSpeed(String(value))}
+          />
+        </View>
       </View>
     </View>
 

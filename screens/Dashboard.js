@@ -12,20 +12,15 @@ import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SQLite from 'expo-sqlite';
 import { getUserType } from "../store/session";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Settings from "./Settings";
 
 
 const Dashboard = ( {navigation} ) => {
   const db = SQLite.openDatabase('example.db');
-  const Tab = createBottomTabNavigator();
 
   const dispatch = useDispatch();
   const speedSettings = useSelector(getSpeedSettings);
   const userType = useSelector(getUserType);
-  // const userType = 'B'
   const temperatureSettings = useSelector(getTemperatureSettings);
-  // const [temperatureSettings, setTemperatureSettings] = useState([]);
 
   useEffect(() => {
     
@@ -43,20 +38,18 @@ const Dashboard = ( {navigation} ) => {
   };
 
   return (
-    <View className="flex flex-col justify-center items-center">
-      <NavBar />
-      <View className="flex flex-col justify-center items-center min-w-[80%]">
-        {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
-        )}
-        
-        {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
-        )}
+    <View className="w-full h-full flex flex-col justify-center items-center">
+      <View className="flex flex-col justify-center items-center">
+        <NavBar />
+        <View className="flex flex-col justify-center items-center min-w-[80%]">
+          {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
+          )}
+          
+          {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
+          )}
+        </View>
+        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
       </View>
-      <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
-      {/* <Tab.Navigator>
-        <Tab.Screen name="Dashboard" component={Dashboard} />
-        <Tab.Screen name="Settings" component={Settings} />
-    </Tab.Navigator> */}
     </View>
   );
 }
