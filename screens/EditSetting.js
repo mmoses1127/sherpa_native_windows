@@ -17,28 +17,27 @@ const EditSetting = ({route, navigation}) => {
 
 
   return (
-      <View>Hi</View>
-      // <Tab.Navigator initialRouteName={userType === 'A' ? 'Edit Temp' : 'Edit Speed'}>
-      //   {userType === 'A' ? <Tab.Screen name="Edit Temp" component={EditTemp} initialParams={{itemId: id}} options={{
-      //     tabBarLabel: 'Edit Item',
-      //     tabBarIcon: () => (
-      //       <Icon name='plus' size={30} color='blue' />
-      //     ),
-      //   }}
-      //   /> : <Tab.Screen name="Edit Speed" component={EditSpeed} initialParams={{itemId: id}} options={{
-      //     tabBarLabel: 'Edit Item',
-      //     tabBarIcon: () => (
-      //       <Icon name='plus' size={30} color='blue' />
-      //     ),
-      //   }}
-      //   />}
-      //   <Tab.Screen name="Settings" component={Settings} options={{
-      //     tabBarLabel: 'Settings',
-      //     tabBarIcon: () => (
-      //       <Icon name='gear' size={30} color='blue' />
-      //     ),
-      //   }}/>
-      // </Tab.Navigator>
+      <Tab.Navigator initialRouteName={userType === 'A' ? 'Edit Temp' : 'Edit Speed'}>
+        {userType === 'A' ? <Tab.Screen name="Edit Temp" component={EditTemp} initialParams={{itemId: id}} options={{
+          tabBarLabel: 'Edit Item',
+          tabBarIcon: () => (
+            <Icon name='plus' size={30} color='blue' />
+          ),
+        }}
+        /> : <Tab.Screen name="Edit Speed" component={EditSpeed} initialParams={{itemId: id}} options={{
+          tabBarLabel: 'Edit Item',
+          tabBarIcon: () => (
+            <Icon name='plus' size={30} color='blue' />
+          ),
+        }}
+        />}
+        <Tab.Screen name="Settings" component={Settings} options={{
+          tabBarLabel: 'Settings',
+          tabBarIcon: () => (
+            <Icon name='gear' size={30} color='blue' />
+          ),
+        }}/>
+      </Tab.Navigator>
 
   )
 };

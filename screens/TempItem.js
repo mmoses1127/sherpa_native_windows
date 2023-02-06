@@ -39,9 +39,9 @@ const TempItem = ( {temperatureSetting} ) => {
   
 
   return (
-    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-full" key={temperatureSetting.id}>
+    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-full min-w-[300px]" key={temperatureSetting.id}>
       <Text className="text-xs" >Start: {convertToLocalTime(temperatureSetting.start_time).slice(11,16)}  End: {convertToLocalTime(temperatureSetting.end_time).slice(11,16)}  T: {String(temp).split('.')[0]}°{tempUnit}</Text>
-      <View className="flex flex-row items-center ml-1 h-10">
+      <View className="flex flex-row items-center jusitfy-end ml-1 h-10">
         <Pressable className="bg-red-500 p-1 rounded-sm m-1" onPress={handleDelete} >
           <Text className="text-xs text-white">Delete</Text>
         </Pressable>

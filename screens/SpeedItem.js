@@ -39,7 +39,7 @@ const SpeedItem = ({ speedSetting }) => {
 
 
   return (
-    <View className="flex flex-row justify-center items-center bg-cyan-300 m-3 h-12 p-3 w-full min-w-[300px]" key={speedSetting.id}>
+    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-full min-w-[300px]" key={speedSetting.id}>
       <Text className="text-xs">
         Start: {convertToLocalTime(speedSetting.start_time).slice(11,16)}  End: {convertToLocalTime(speedSetting.end_time).slice(11,16)}  Sp: {speed}
       </Text>
