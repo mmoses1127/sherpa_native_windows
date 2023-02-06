@@ -99,8 +99,6 @@ const App = () => {
           <Stack.Screen name="AddSetting" component={AddSetting}/>
           <Stack.Screen name="Settings" component={Settings} />
           <Stack.Screen name="EditSetting" component={EditSetting} />
-          {/* <Stack.Screen name="EditTemp" component={EditTemp} />
-          <Stack.Screen name="EditSpeed" component={EditSpeed} /> */}
         </>
         ) : (
         <Stack.Screen name="Login" component={Login} />
