@@ -11,6 +11,8 @@ controls and set settings intervals for either temperature or fan speed.
 - Testing of this application was only done on an Android device. iOS functionality may be limited.
 - This application features a SQLite local database that is stored on the user's device. This is for simplicity and ease of testing. In a production build, a remote database would be used.
 
+# Functionality
+
 - User A will create a list of temperatures in a 24h period.
 - Each list item will contain 3 values: Start time, end time, temperature
 (accuracy of 0.1) value (no lower than 0, no higher than 100).
