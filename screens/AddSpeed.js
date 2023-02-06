@@ -51,7 +51,7 @@ const AddSpeed = () => {
       
       start_time: startTime,
       end_time: endTime,
-      speed
+      speed: parseInt(speed)
     }
     
     dispatch(createSpeedSetting(newSpeedSetting));

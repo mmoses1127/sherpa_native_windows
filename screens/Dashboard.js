@@ -6,7 +6,7 @@ import { fetchTemperatureSettings, sqlFetchTemperatureSettings, getTemperatureSe
 import { fetchSpeedSettings, getSpeedSettings } from "../store/speedSettings";
 import TempItem from "./TempItem";
 import SpeedItem from "./SpeedItem";
-import { Button } from 'react-native';
+import { Button, ScrollView } from 'react-native';
 import NavBar from "./NavBar";
 import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,16 +39,16 @@ const Dashboard = ( {navigation} ) => {
   };
 
   return (
-    <View className="w-full h-full flex flex-col justify-center items-center">
+    <View className="w-full min-h-full flex flex-col justify-center items-center">
       <View className="flex flex-col justify-center items-center">
         <NavBar />
-        <View className="flex flex-col justify-center items-center min-w-[80%]">
+        <ScrollView className="flex flex-col h-3/4 portrait: w-1/2 landscape: w-1/2">
           {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
           )}
           
           {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
           )}
-        </View>
+        </ScrollView>
         <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
       </View>
     </View>

@@ -17,7 +17,7 @@ export const convertFtoC = (temp) => {
 
 export const speedLabels = {
   'Low': 1,
-  'Medium': 2,
+  'Med': 2,
   'High': 3
 }
 

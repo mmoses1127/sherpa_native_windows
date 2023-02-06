@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTemperatureSetting, sqlDeleteTemperatureSetting } from "../store/temperatureSettings";
 import { convertCtoF, fetchUnit } from "./Settings";
-import { Button, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useEffect, useState } from "react";
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
@@ -39,11 +39,15 @@ const TempItem = ( {temperatureSetting} ) => {
   
 
   return (
-    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-[90%] min-w-[300px]" key={temperatureSetting.id}>
-      <Text>Start: {convertToLocalTime(temperatureSetting.start_time).slice(11,16)}  End: {convertToLocalTime(temperatureSetting.end_time).slice(11,16)}  Temperature: {temp[temp.length - 1] === '0' ? temp.slice(0,-2) : temp}°{tempUnit}</Text>
-      <View className="flex flex-row items-center ml-2 w-[80px] h-10">
-        <Button color='red' title="Delete" onPress={handleDelete} />
-        <Button title="Edit" onPress={handleUpdate} />
+    <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-full" key={temperatureSetting.id}>
+      <Text className="text-xs" >Start: {convertToLocalTime(temperatureSetting.start_time).slice(11,16)}  End: {convertToLocalTime(temperatureSetting.end_time).slice(11,16)}  T: {String(temp).split('.')[0]}°{tempUnit}</Text>
+      <View className="flex flex-row items-center ml-1 h-10">
+        <Pressable className="bg-red-500 p-1 rounded-sm m-1" onPress={handleDelete} >
+          <Text className="text-xs text-white">Delete</Text>
+        </Pressable>
+        <Pressable className="bg-blue-500 p-1 rounded-sm m-1" onPress={handleUpdate} >
+          <Text className="text-xs text-white">Edit</Text>
+        </Pressable>
       </View>
     </View>
   )

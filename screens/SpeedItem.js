@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteSpeedSetting } from "../store/speedSettings";
 import { findSpeedLabel, fetchUnit } from "./Settings";
 import { useEffect, useState } from "react";
-import { Button, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
@@ -40,12 +40,16 @@ const SpeedItem = ({ speedSetting }) => {
 
   return (
     <View className="flex flex-row justify-center items-center bg-cyan-300 m-3 h-12 p-3 w-full min-w-[300px]" key={speedSetting.id}>
-      <Text>
-        Start: {convertToLocalTime(speedSetting.start_time).slice(11,16)}  End: {convertToLocalTime(speedSetting.end_time).slice(11,16)}  Speed: {speed}
+      <Text className="text-xs">
+        Start: {convertToLocalTime(speedSetting.start_time).slice(11,16)}  End: {convertToLocalTime(speedSetting.end_time).slice(11,16)}  Sp: {speed}
       </Text>
-      <View className="flex flex-row items-center jusitfy-end ml-2 w-[80px] h-10">
-        <Button color='red' title="Delete" onPress={handleDelete} />
-        <Button title="Edit" onPress={handleUpdate} />
+      <View className="flex flex-row items-center jusitfy-end ml-1 h-10">
+      <Pressable className="bg-red-500 p-1 rounded-sm m-1" onPress={handleDelete} >
+          <Text className="text-xs text-white">Delete</Text>
+        </Pressable>
+        <Pressable className="bg-blue-500 p-1 rounded-sm m-1" onPress={handleUpdate} >
+          <Text className="text-xs text-white">Edit</Text>
+        </Pressable>
       </View>
     </View>
   )
