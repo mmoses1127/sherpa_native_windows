@@ -69,21 +69,24 @@ const Settings = ( { navigation } ) => {
   const handleSave = async () => {
     if (userType === 'A') {
       await AsyncStorage.setItem('tempUnit', tempUnit);
+      console.log('tempunit stored as', tempUnit)
     } else {
       await AsyncStorage.setItem('speedUnit', speedUnit);
     }
-    // navigation.navigate('Dashboard')
+    navigation.push('Dashboard')
   };
 
   const saveUnit = async (unit) => {
     if (userType === 'A') {
-      await AsyncStorage.setItem('tempUnit', unit);
+      // await AsyncStorage.setItem('tempUnit', unit);
       setTempUnit(unit);
     } else {
-      await AsyncStorage.setItem('speedUnit', unit);
+      // await AsyncStorage.setItem('speedUnit', unit);
       setSpeedUnit(unit);
     }
   };
+
+  console.log('usertype', userType, 'tempunit', tempUnit, 'speedunit', speedUnit)
 
   return (
 

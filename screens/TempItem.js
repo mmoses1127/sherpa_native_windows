@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
 
 
-const TempItem = ( {temperatureSetting} ) => {
+const TempItem = ( {temperatureSetting}, props ) => {
     
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -25,7 +25,7 @@ const TempItem = ( {temperatureSetting} ) => {
 
     setUnit();
 
-  }, [userType]);
+  }, [userType, props]);
 
   const handleDelete = (e) => {
     e.preventDefault();

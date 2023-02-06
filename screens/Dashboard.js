@@ -14,7 +14,9 @@ import * as SQLite from 'expo-sqlite';
 import { getUserType } from "../store/session";
 
 
-const Dashboard = ( {navigation} ) => {
+const Dashboard = ( {route, navigation} ) => {
+  console.log('mounted dashboard')
+  console.log(route)
   const db = SQLite.openDatabase('example.db');
 
   const dispatch = useDispatch();
@@ -31,7 +33,7 @@ const Dashboard = ( {navigation} ) => {
     dispatch(fetchSpeedSettings());
   }
 
-  }, [dispatch]);
+  }, [dispatch, route]);
 
   const handleAdd = (e) => {
     e.preventDefault();
