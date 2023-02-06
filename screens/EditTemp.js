@@ -8,7 +8,6 @@ import formatTime, { convertToLocalTime } from "./clock" ;
 import { fetchUnits, getTempUnit } from "../store/units";
 
 
-
 const EditTemp = ({route, navigation}) => {
 
   const tempItemId = route.params.itemId;
@@ -18,43 +17,16 @@ const EditTemp = ({route, navigation}) => {
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  // const [tempUnit, setTempUnit] = useState('');
   const tempUnit = useSelector(getTempUnit)[0];
   const [temperature, setTemperature] = useState('');
 
-  // useEffect(() => {
-  //   const tabClick = navigation.addListener('tabPress', (e) => {
-  //     // Prevent default behavior
-  //     e.preventDefault();
-  //     navigation.push( 'Edit Setting', { screen: 'Edit Temp' })
-  //     alert('Default behavior prevented');
-  //     // Do something manually
-  //     // ...
-  //   });
-  // }, [navigation])
-
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit('A');
-    //   setTempUnit(unit[0]);
-    // }
-
-    // setUnit();
-
     dispatch(fetchUnits());
-
   }, []);
 
   useEffect(() => {
     dispatch(fetchTemperatureSetting(tempItemId))
   }, [dispatch, tempItemId]);
-
-
-  console.log('tempsetting.start_time', tempSetting.start_time)
-  console.log('convert', convertToLocalTime(tempSetting.start_time))
-  console.log( 'new date start time', new Date(tempSetting.start_time))
-  console.log( 'new date converted', new Date(convertToLocalTime(tempSetting.start_time)))
 
   useEffect(() => {
     if (tempSetting) {
@@ -77,6 +49,8 @@ const EditTemp = ({route, navigation}) => {
     let splitTemp = temperature.split('.');
     if (splitTemp.length > 2 || temperature.includes(',')) {
       setTemperature(temperature.slice(0, temperature.length - 1));
+    } else if (temperature[0] === '0' && temperature.length > 1 && temperature[1] !== '.') {
+      setTemperature(temperature.slice(1));
     } else {
       setTemperature(temperature);
     }

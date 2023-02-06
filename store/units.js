@@ -26,11 +26,6 @@ const addUnits = (units) => {
   }
 };
 
-// export const getUnits = (state) => {
-//   if (!state.units) return null;
-//   return state.units;
-// };
-
 export const getSpeedUnit = (state) => {
   if (!state.units) return 'Fahrenheit';
   return state.units.speedUnit;
@@ -44,9 +39,7 @@ export const getTempUnit = (state) => {
 export const fetchUnits = () => async dispatch => {
   const tempUnit = await AsyncStorage.getItem('tempUnit') || 'Fahrenheit';
   const speedUnit = await AsyncStorage.getItem('speedUnit') || 'Labels';
-
   dispatch(addUnits({tempUnit, speedUnit}));
-
 };
 
 export const updateSpeedUnit = (speedUnit) => async dispatch => {

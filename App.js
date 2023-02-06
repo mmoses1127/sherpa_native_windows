@@ -29,6 +29,9 @@ const App = () => {
   useEffect(() => {
     console.log('loading db', db)
     db.transaction(tx => {
+
+      // Below is a snippet that can be used to manually drop and rebuild the DB tables if needed
+
       // console.log('dropping tables...')
       // tx.executeSql('DROP TABLE IF EXISTS users');
       // tx.executeSql('DROP TABLE IF EXISTS temperature_settings');
@@ -37,9 +40,9 @@ const App = () => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, user_type TEXT, session_token TEXT)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS temperature_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, speed INTEGER)');
-    });
 
-    
+      // End of DB rebuild snippet
+    });
     
     db.transaction(tx => {
       console.log('checking users...')
@@ -88,8 +91,6 @@ const App = () => {
 
   const Stack = createNativeStackNavigator();
 
-  
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Dashboard'>
@@ -97,7 +98,6 @@ const App = () => {
         <>
           <Stack.Screen name="Dashboard" component={Dashboard} />
           <Stack.Screen name="Add Setting" component={AddSetting}/>
-          {/* <Stack.Screen name="Settings" component={Settings} /> */}
           <Stack.Screen name="Edit Setting" component={EditSetting} />
         </>
         ) : (

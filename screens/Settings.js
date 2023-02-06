@@ -6,7 +6,6 @@ import { getUserType } from "../store/session";
 import { fetchUnits, getSpeedUnit, getTempUnit, updateSpeedUnit, updateTempUnit } from "../store/units"; 
 
 
-
 export const convertCtoF = (temp) => {
   return Math.round(((temp * 9/5) + 32) * 10) / 10;
 };
@@ -49,65 +48,21 @@ const Settings = ( { navigation, route } ) => {
 
   const dispatch = useDispatch();
   const userType = useSelector(getUserType)
-  console.log(route)
-  // const [tempUnit, setTempUnit] = useState('Fahrenheit');
-  // const [speedUnit, setSpeedUnit] = useState('Numbers');
   const tempUnit = useSelector(getTempUnit);
   const speedUnit = useSelector(getSpeedUnit);
 
-  // useEffect(() => {
-  //   const tabClick = navigation.addListener('tabPress', (e) => {
-  //     // Prevent default behavior
-  //     e.preventDefault();
-  //     navigation.push('Edit Setting', { screen: 'Settings' })
-  //     alert('Default behavior prevented');
-  //     // Do something manually
-  //     // ...
-  //   });
-  // }, [navigation])
-
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit(userType);
-    //   userType === 'A' ? setTempUnit(unit) : setSpeedUnit(unit);
-    // }
-
-    // setUnit();
-
     dispatch(fetchUnits())
-
   }, [userType]);
   
-  const handleCancel = (e) => {
-    navigation.navigate('Dashboard')
-  };
-  
-  const handleSave = async () => {
-    if (userType === 'A') {
-      // await AsyncStorage.setItem('tempUnit', tempUnit);
-      dispatch(updateTempUnit(tempUnit))
-      console.log('tempunit stored as', tempUnit)
-    } else {
-      // await AsyncStorage.setItem('speedUnit', speedUnit);
-      dispatch(updateSpeedUnit(speedUnit))
-    }
-    navigation.push('Dashboard')
-  };
-
   const saveUnit = async (unit) => {
     if (userType === 'A') {
-      // await AsyncStorage.setItem('tempUnit', unit);
-      // setTempUnit(unit);
       dispatch(updateTempUnit(unit));
     } else {
-      // await AsyncStorage.setItem('speedUnit', unit);
       dispatch(updateSpeedUnit(unit));
-      // setSpeedUnit(unit);
     }
   };
 
-  console.log('usertype', userType, 'tempunit', tempUnit, 'speedunit', speedUnit)
 
   return (
 
@@ -136,14 +91,7 @@ const Settings = ( { navigation, route } ) => {
             </Pressable>
           </View>
         }
-
-        </View>
-        <View className="flex flex-col items-center justify-between">
-
-          <View className=" w-1/2 flex flex-row justify-evenly items-center m-4">
-            {/* <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" /> */}
-            {/* <Button title="Save" onPress={handleSave} className="m-3  min-w-[100px] h-12"/> */}
-          </View>
+        
         </View>
       </View>
     </View>

@@ -14,30 +14,13 @@ const AddTemp = ({ navigation }) => {
   const dispatch = useDispatch();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  // const [tempUnit, setTempUnit] = useState('');
   const tempUnit = useSelector(getTempUnit)[0];
   const [temperature, setTemperature] = useState('');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
 
-  // useEffect(() => {
-  //   const tabClick = navigation.addListener('tabPress', (e) => {
-  //     e.preventDefault();
-  //     navigation.push( 'Add Setting', { screen: 'Add Temp' })
-  //   });
-  // }, [navigation])
-
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit('A');
-    //   setTempUnit(unit[0]);
-    // }
-
-    // setUnit();
-
     dispatch(fetchUnits());
-
   }, []);
 
   useEffect(() => {
@@ -53,14 +36,20 @@ const AddTemp = ({ navigation }) => {
     let splitTemp = temperature.split('.');
     if (splitTemp.length > 2 || temperature.includes(',')) {
       setTemperature(temperature.slice(0, temperature.length - 1));
+    } else if (temperature[0] === '0' && temperature.length > 1 && temperature[1] !== '.') {
+      setTemperature(temperature.slice(1));
     } else {
       setTemperature(temperature);
     }
   };
 
-
   const handleSave = (e) => {
     e.preventDefault();
+
+    if (temperature === '.' || temperature === ',') {
+      alert('Please enter a valid temperature')
+      return;
+    }
 
     if (!startTime || !endTime || !temperature) {
       alert('Please fill out all fields')
@@ -82,10 +71,16 @@ const AddTemp = ({ navigation }) => {
       return;
     }
 
+    let finalTemp = temperature;
+
+    if (temperature[0] === '.') {
+      finalTemp = `0${temperature}`;
+    }
+
     const newTemperatureSetting = {
       start_time: startTime,
       end_time: endTime,
-      temperature: tempUnit === 'F' ? convertFtoC(temperature) : temperature
+      temperature: tempUnit === 'F' ? convertFtoC(temperature) : finalTemp
     }
 
     dispatch(createTemperatureSetting(newTemperatureSetting));
@@ -102,6 +97,14 @@ const AddTemp = ({ navigation }) => {
     const currentTime = selectedTime || startTime;
     setShow(Platform.OS === 'ios');
     mode === 'start' ? setStartTime(currentTime) : setEndTime(currentTime);
+  };
+
+  const loadClockTime = (mode) => {
+    if (mode === 'start')  {
+      return startTime ? startTime : new Date();
+    } else {
+      return endTime ? endTime : new Date();
+    }
   };
 
 
@@ -130,7 +133,7 @@ const AddTemp = ({ navigation }) => {
 
         <Button  title="Save" onPress={handleSave} />
         {show && 
-        <DateTimePicker testID="dateTimePicker" value={new Date()} mode={'time'}
+        <DateTimePicker testID="dateTimePicker" value={loadClockTime(mode)} mode={'time'}
         is24Hour={false} display="default" onChange={handleClockChange} />
         }
       </View>

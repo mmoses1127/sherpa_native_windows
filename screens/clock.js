@@ -1,5 +1,4 @@
 const formatTime = (time) => {
-  // console.log(time)
   let hours = time.getHours();
   let minutes = time.getMinutes();
 
@@ -15,9 +14,6 @@ export const convertToLocalTime = (time) => {
   dateObject = new Date(dateObject.getTime() - (offset*60*1000));
   let convertedDate = dateObject.toISOString();
   return convertedDate;
-
-  console.log(time)
-  console.log(convertedDate)
-}
+};
 
 export default formatTime;

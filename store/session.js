@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import csrfFetch from './csrf.js';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('example.db');
@@ -7,6 +6,18 @@ const db = SQLite.openDatabase('example.db');
 const ADD_CURRENT_USER = 'ADD_CURRENT_USER';
 const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
 
+export const addCurrentUser = (user) => {
+  return ({
+    type: ADD_CURRENT_USER,
+    user
+  });
+};
+
+export const removeCurrentUser = () => {
+  return ({
+    type: REMOVE_CURRENT_USER,
+  });
+};
 
 export const getCurrentUser = (state = {}) => {
   if (state.session && state.session.user) {
@@ -14,7 +25,7 @@ export const getCurrentUser = (state = {}) => {
   } else {
     return null;
   }
-}
+};
 
 export const getUserType = (state = {}) => {
   if (state.session && state.session.user) {
@@ -48,20 +59,8 @@ export const sqlLogin = (user) => async (dispatch) => {
 export const logout = () => async dispatch => {
   storeCurrentUser(null, null);
   dispatch(removeCurrentUser());;
-}
-
-export const addCurrentUser = (user) => {
-  return ({
-    type: ADD_CURRENT_USER,
-    user
-  });
 };
 
-export const removeCurrentUser = () => {
-  return ({
-    type: REMOVE_CURRENT_USER,
-  });
-};
 
 export const findUserByToken = (token) => async dispatch => {
   const user = await db.transaction(tx => {
@@ -78,7 +77,7 @@ export const findUserByToken = (token) => async dispatch => {
       (txObj, error) => console.log(error)
     );
   });
-}
+};
 
 
 export const restoreSession = () => async dispatch => {
@@ -86,13 +85,12 @@ export const restoreSession = () => async dispatch => {
     const token = await AsyncStorage.getItem("sessionToken");
   // search for a user with given token
     const user = await findUserByToken(token);
-
   // if token is found, log the user in
     if (user) {
       storeCurrentUser(user, token);
       dispatch(addCurrentUser(user)); 
     }
-}
+};
 
 export const storeCurrentUser = async (user, sessionToken) => {
   if (user) {
@@ -125,10 +123,8 @@ fixUser();
 const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_CURRENT_USER:
-      console.log({...state, user: action.user})
       return { ...state, user: action.user }
     case REMOVE_CURRENT_USER:
-      console.log({...state, user: null})
       return { ...state, user: null}
     default:
       return state;

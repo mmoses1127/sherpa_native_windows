@@ -6,18 +6,14 @@ import Settings from "./Settings";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
+
 const Tab = createMaterialBottomTabNavigator();
-
-
 
 const EditSetting = ({route}) => {
 
   const userType = useSelector(getUserType);
   const id = route.params.itemId;
   
-
-
-
   return (
       <Tab.Navigator>
         {userType === 'A' ? <Tab.Screen name="Edit Temp" component={EditTemp} initialParams={{itemId: id}} options={{

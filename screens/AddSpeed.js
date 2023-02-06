@@ -9,40 +9,21 @@ import formatTime from "./clock";
 import { getSpeedUnit, fetchUnits } from "../store/units";
 
 
-
 const AddSpeed = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [speed, setSpeed] = useState(1);
-  // const [speedUnit, setSpeedUnit] = useState('Labels');
   const speedUnit = useSelector(getSpeedUnit);
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
 
-  // useEffect(() => {
-  //   const tabClick = navigation.addListener('tabPress', (e) => {
-  //     e.preventDefault();
-  //     navigation.push( 'Add Setting', { screen: 'Add Speed' })
-  //   });
-  // }, [navigation])
-
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit('B');
-    //   setSpeedUnit(unit);
-    // }
-
-    // setUnit();
-
     dispatch(fetchUnits())
-
   }, []);
 
   const handleSave = (e) => {
-    console.log('js start end times', startTime, endTime)
     e.preventDefault();
 
     if (!startTime || !endTime || !speed) {
@@ -78,6 +59,14 @@ const AddSpeed = ({ navigation }) => {
     mode === 'start' ? setStartTime(currentTime) : setEndTime(currentTime);
   };
 
+  const loadClockTime = (mode) => {
+    if (mode === 'start')  {
+      return startTime ? startTime : new Date();
+    } else {
+      return endTime ? endTime : new Date();
+    }
+  };
+
   return (
 
     <View className="w-full h-full flex flex-col justify-center items-center">
@@ -111,7 +100,7 @@ const AddSpeed = ({ navigation }) => {
 
     <Button  title="Save" onPress={handleSave} />
     {show && 
-    <DateTimePicker testID="dateTimePicker" value={new Date()} mode={'time'}
+    <DateTimePicker testID="dateTimePicker" value={loadClockTime(mode)} mode={'time'}
     is24Hour={false} display="default" onChange={handleClockChange} />
     }
   </View>

@@ -1,4 +1,3 @@
-import csrfFetch from './csrf.js';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('example.db');
@@ -92,7 +91,6 @@ export const deleteSpeedSetting = (speedSettingId) => async dispatch => {
       [speedSettingId],
       (txtObj, resultSet) => {
           dispatch(removeSpeedSetting(speedSettingId))
-          console.log('deleted speed setting number ', speedSettingId)
       },
       (txtObj, error) => console.log('error', error)
     );
@@ -117,7 +115,6 @@ export const createSpeedSetting = (speedSetting) => async dispatch => {
 
 export const updateSpeedSetting = (speedSetting) => async dispatch => {
   db.transaction(tx => {
-    console.log('updating speed setting', speedSetting)
     tx.executeSql(
       `update speed_settings set start_time = ?, end_time = ?, speed = ? where id = ?`,
       [speedSetting.start_time, speedSetting.end_time, speedSetting.speed, speedSetting.id],

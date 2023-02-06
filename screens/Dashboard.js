@@ -1,29 +1,28 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getCurrentUser } from "../store/session";
-import { fetchTemperatureSettings, sqlFetchTemperatureSettings, getTemperatureSettings, addTemperatureSettings } from "../store/temperatureSettings";
+import { useEffect } from "react";
+import { fetchTemperatureSettings, getTemperatureSettings } from "../store/temperatureSettings";
 import { fetchSpeedSettings, getSpeedSettings } from "../store/speedSettings";
 import TempItem from "./TempItem";
 import SpeedItem from "./SpeedItem";
 import { Button, ScrollView } from 'react-native';
 import NavBar from "./NavBar";
 import { View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SQLite from 'expo-sqlite';
 import { getUserType } from "../store/session";
+import { fetchUnits, getTempUnit, getSpeedUnit } from "../store/units";
 
 
-const Dashboard = ( {route, navigation} ) => {
-  console.log('mounted dashboard')
-  console.log(route)
-  const db = SQLite.openDatabase('example.db');
+const Dashboard = ( { navigation } ) => {
 
   const dispatch = useDispatch();
   const speedSettings = useSelector(getSpeedSettings);
   const userType = useSelector(getUserType);
-  console.log('userType', userType)
+  const tempUnit = useSelector(getTempUnit);
+  const speedUnit = useSelector(getSpeedUnit);
   const temperatureSettings = useSelector(getTemperatureSettings);
+
+  useEffect(() => {
+    dispatch(fetchUnits())
+  }, [userType, dispatch]);
 
   useEffect(() => {
     
@@ -33,7 +32,7 @@ const Dashboard = ( {route, navigation} ) => {
     dispatch(fetchSpeedSettings());
   }
 
-  }, [dispatch, route]);
+  }, [dispatch]);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -45,13 +44,15 @@ const Dashboard = ( {route, navigation} ) => {
       <View className="flex flex-col justify-center items-center">
         <NavBar />
         <ScrollView className="flex flex-col h-3/4 portrait: w-1/2 landscape: w-1/2">
-          {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
+          {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} tempUnit={tempUnit} key={temperatureSetting.id} />
           )}
           
-          {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
+          {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} speedUnit={speedUnit} key={speedSetting.id} />
           )}
+        <View className="w-full flex flex-row justify-center items-center">
+          <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
+        </View>
         </ScrollView>
-        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
       </View>
     </View>
   );

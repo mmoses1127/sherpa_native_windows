@@ -8,12 +8,9 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 
 const Tab = createMaterialBottomTabNavigator();
 
-
 const AddSetting = () => {
 
   const userType = useSelector(getUserType);
-  // const Tab = createBottomTabNavigator();
-
 
   return (
 
@@ -34,9 +31,8 @@ const AddSetting = () => {
         />
         }
 
-        
         <Tab.Screen name="Settings" component={Settings} options={{
-          tabBarLabel: 'AddTemp',
+          tabBarLabel: 'Settings',
           tabBarIcon: () => (
             <Icon name='gear' size={30} color='blue' />
           ),

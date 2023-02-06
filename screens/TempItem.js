@@ -1,35 +1,24 @@
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTemperatureSetting, sqlDeleteTemperatureSetting } from "../store/temperatureSettings";
-import { convertCtoF, fetchUnit } from "./Settings";
+import { deleteTemperatureSetting } from "../store/temperatureSettings";
+import { convertCtoF } from "./Settings";
 import { Pressable, Text, View } from 'react-native';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
-import { fetchUnits, getTempUnit } from "../store/units";
+import { fetchUnits } from "../store/units";
 
 
-const TempItem = ( {temperatureSetting}, props ) => {
+const TempItem = ( {temperatureSetting, tempUnit} ) => {
     
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userType = useSelector(getUserType);
-  // const [tempUnit, setTempUnit] = useState('F');
-  const tempUnit = useSelector(getTempUnit)[0]
   const temp = tempUnit === 'F' ? convertCtoF(temperatureSetting.temperature) : temperatureSetting.temperature;
 
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit(userType);
-    //   setTempUnit(unit[0]);
-    // }
-
-    // setUnit();
-
     dispatch(fetchUnits())
-
-  }, [userType, props]);
+  }, [userType]);
 
   const handleDelete = (e) => {
     e.preventDefault();
@@ -44,7 +33,7 @@ const TempItem = ( {temperatureSetting}, props ) => {
 
   return (
     <View className="flex flex-row justify-between items-center bg-cyan-300 m-3 h-12 p-3 w-full min-w-[300px]" key={temperatureSetting.id}>
-      <Text className="text-xs" >Start: {convertToLocalTime(temperatureSetting.start_time).slice(11,16)}  End: {convertToLocalTime(temperatureSetting.end_time).slice(11,16)}  T: {String(temp).split('.')[0]}°{tempUnit}</Text>
+      <Text className="text-xs" >Start: {convertToLocalTime(temperatureSetting.start_time).slice(11,16)}  End: {convertToLocalTime(temperatureSetting.end_time).slice(11,16)}  T: {Math.round(temp)}°{tempUnit ? tempUnit[0] : '-'}</Text>
       <View className="flex flex-row items-center jusitfy-end ml-1 h-10">
         <Pressable className="bg-red-500 p-1 rounded-sm m-1" onPress={handleDelete} >
           <Text className="text-xs text-white">Delete</Text>

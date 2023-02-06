@@ -1,38 +1,27 @@
 import { useDispatch, useSelector } from "react-redux";
 import { deleteSpeedSetting } from "../store/speedSettings";
-import { findSpeedLabel, fetchUnit } from "./Settings";
-import { useEffect, useState } from "react";
+import { findSpeedLabel } from "./Settings";
+import { useEffect } from "react";
 import { Pressable, Text, View } from 'react-native';
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
-import { fetchUnits, getSpeedUnit } from "../store/units";
+import { fetchUnits } from "../store/units";
 
 
-const SpeedItem = ({ speedSetting }) => {
+const SpeedItem = ({ speedSetting, speedUnit }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userType = useSelector(getUserType);
-  // const [speedUnit, setSpeedUnit] = useState('Labels');
-  const speedUnit = useSelector(getSpeedUnit);
   const speed = speedUnit === 'Labels' ? findSpeedLabel(speedSetting.speed) : speedSetting.speed;
 
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit(userType);
-    //   setSpeedUnit(unit);
-    // }
-
-    // setUnit();
     dispatch(fetchUnits());
-
   }, [userType]);
 
   const handleDelete = (e) => {
     e.preventDefault();
     dispatch(deleteSpeedSetting(speedSetting.id))
-    alert('Deleted')
   };
 
   const handleUpdate = (e) => {

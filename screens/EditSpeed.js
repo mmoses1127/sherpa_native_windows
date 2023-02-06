@@ -10,11 +10,9 @@ import { useNavigation } from '@react-navigation/native';
 import { getSpeedUnit, fetchUnits } from "../store/units";
 
 
-
 const EditSpeed = ({route}) => {
 
   const speedItemId = route.params.itemId;
-  console.log('speedItemId', speedItemId)
   const speedSetting = useSelector(getSpeedSetting(speedItemId));
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -22,29 +20,16 @@ const EditSpeed = ({route}) => {
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  // const [speedUnit, setSpeedUnit] = useState('Labels');
   const speedUnit = useSelector(getSpeedUnit);
   const [speed, setSpeed] = useState('');
 
   useEffect(() => {
-
-    // const setUnit = async () => {
-    //   let unit = await fetchUnit('B');
-    //   setSpeedUnit(unit);
-    // }
-
-    // setUnit();
-
     dispatch(fetchUnits());
-
   }, []);
 
   useEffect(() => {
     dispatch(fetchSpeedSetting(speedItemId))
   }, [dispatch, speedItemId]);
-
-  console.log(speedSetting.start_time)
-  console.log(convertToLocalTime(speedSetting.start_time))
 
   useEffect(() => {
     if (speedSetting) {

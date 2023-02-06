@@ -3,10 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import React from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import { useNavigate } from 'react-router-dom';
-import * as SQLite from 'expo-sqlite';
 
-const Login = ( {navigation} ) => {
+const Login = () => {
 
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
@@ -15,7 +13,7 @@ const Login = ( {navigation} ) => {
 
   const handleLogin = async (email, password) => {
     dispatch(sessionActions.sqlLogin({email, password}));
-  }
+  };
 
   return (
     <View className="w-full h-full flex flex-col justify-center items-center">
