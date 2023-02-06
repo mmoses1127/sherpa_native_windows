@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { Button, Text, View, Pressable, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
@@ -9,7 +8,7 @@ import formatTime, { convertToLocalTime } from "./clock" ;
 
 
 
-const EditTemp = ({route}) => {
+const EditTemp = ({route, navigation}) => {
 
   const tempItemId = route.params.itemId;
   const tempSetting = useSelector(getTemperatureSetting(tempItemId));
@@ -37,10 +36,15 @@ const EditTemp = ({route}) => {
   }, [dispatch, tempItemId]);
 
 
+  console.log('tempsetting.start_time', tempSetting.start_time)
+  console.log('convert', convertToLocalTime(tempSetting.start_time))
+  console.log( 'new date start time', new Date(tempSetting.start_time))
+  console.log( 'new date converted', new Date(convertToLocalTime(tempSetting.start_time)))
+
   useEffect(() => {
     if (tempSetting) {
-      setStartTime(new Date(convertToLocalTime(tempSetting.start_time)));
-      setEndTime(new Date(convertToLocalTime(tempSetting.end_time)));
+      setStartTime(new Date(tempSetting.start_time));
+      setEndTime(new Date(tempSetting.end_time));
       setTemperature(tempUnit === 'F' ? String(convertCtoF(tempSetting.temperature)) : String(tempSetting.temperature));
     }
   }, [tempSetting, tempUnit]);

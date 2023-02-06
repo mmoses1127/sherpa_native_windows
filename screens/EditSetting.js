@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
-const EditSetting = ({route, navigation}) => {
+const EditSetting = ({route}) => {
 
   const userType = useSelector(getUserType);
   const Tab = createBottomTabNavigator();

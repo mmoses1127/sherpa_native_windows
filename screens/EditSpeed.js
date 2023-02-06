@@ -6,17 +6,15 @@ import { Button, Text, View, Pressable, TextInput } from "react-native";
 import { getSpeedSetting, fetchSpeedSetting, updateSpeedSetting } from "../store/speedSettings";
 import { Slider } from '@miblanchard/react-native-slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
 
 
 
-const EditSpeed = ({route}) => {
+const EditSpeed = ({route, navigation}) => {
 
   const speedItemId = route.params.itemId;
   console.log('speedItemId', speedItemId)
   const speedSetting = useSelector(getSpeedSetting(speedItemId));
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -44,8 +42,8 @@ const EditSpeed = ({route}) => {
 
   useEffect(() => {
     if (speedSetting) {
-      setStartTime(new Date(convertToLocalTime(speedSetting.start_time)));
-      setEndTime(new Date(convertToLocalTime(speedSetting.end_time)));
+      setStartTime(new Date(speedSetting.start_time));
+      setEndTime(new Date(speedSetting.end_time));
       setSpeed(speedSetting.speed);
     }
   }, [speedSetting]);
@@ -72,7 +70,7 @@ const EditSpeed = ({route}) => {
 
     dispatch(updateSpeedSetting(updatedSpeedSetting));
     
-    navigation.navigate('/');
+    navigation.navigate('Dashboard');
 
   };
 

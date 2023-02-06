@@ -18,7 +18,6 @@ const AddSpeed = () => {
   const [endTime, setEndTime] = useState('');
   const [speed, setSpeed] = useState(1);
   const [speedUnit, setSpeedUnit] = useState('Labels');
-  // const unit = findUnitCookie('speed');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
 
