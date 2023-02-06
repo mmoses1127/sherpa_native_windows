@@ -37,7 +37,7 @@ const Dashboard = ( {route, navigation} ) => {
 
   const handleAdd = (e) => {
     e.preventDefault();
-    navigation.navigate('AddSetting');
+    navigation.navigate('Add Setting');
   };
 
   return (

@@ -6,23 +6,26 @@ import { Pressable, Text, View } from 'react-native';
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
+import { fetchUnits, getSpeedUnit } from "../store/units";
 
 
 const SpeedItem = ({ speedSetting }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userType = useSelector(getUserType);
-  const [speedUnit, setSpeedUnit] = useState('Labels');
+  // const [speedUnit, setSpeedUnit] = useState('Labels');
+  const speedUnit = useSelector(getSpeedUnit);
   const speed = speedUnit === 'Labels' ? findSpeedLabel(speedSetting.speed) : speedSetting.speed;
 
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit(userType);
-      setSpeedUnit(unit);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit(userType);
+    //   setSpeedUnit(unit);
+    // }
 
-    setUnit();
+    // setUnit();
+    dispatch(fetchUnits());
 
   }, [userType]);
 
@@ -34,7 +37,7 @@ const SpeedItem = ({ speedSetting }) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    navigation.navigate('EditSetting', {itemId: speedSetting.id});
+    navigation.navigate('Edit Setting', {itemId: speedSetting.id});
   };
 
 

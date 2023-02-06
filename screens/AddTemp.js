@@ -1,35 +1,42 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTemperatureSetting, addTemperatureSetting } from "../store/temperatureSettings";
 import { convertFtoC, fetchUnit } from "./Settings";
 import { Button, TextInput, View, Text, Pressable } from 'react-native';
 import { getUnit } from "./Settings";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import formatTime from "./clock" ;
-import * as SQLite from 'expo-sqlite';
-import { useNavigation } from '@react-navigation/native';
+import { fetchUnits, getTempUnit } from "../store/units";
 
 
-
-const AddTemp = () => {
+const AddTemp = ({ navigation }) => {
 
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [tempUnit, setTempUnit] = useState('');
+  // const [tempUnit, setTempUnit] = useState('');
+  const tempUnit = useSelector(getTempUnit)[0];
   const [temperature, setTemperature] = useState('');
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
 
+  // useEffect(() => {
+  //   const tabClick = navigation.addListener('tabPress', (e) => {
+  //     e.preventDefault();
+  //     navigation.push( 'Add Setting', { screen: 'Add Temp' })
+  //   });
+  // }, [navigation])
+
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit('A');
-      setTempUnit(unit[0]);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit('A');
+    //   setTempUnit(unit[0]);
+    // }
 
-    setUnit();
+    // setUnit();
+
+    dispatch(fetchUnits());
 
   }, []);
 

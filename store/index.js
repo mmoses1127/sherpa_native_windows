@@ -3,12 +3,14 @@ import thunk from 'redux-thunk';
 import sessionReducer from './session';
 import temperatureSettingsReducer from './temperatureSettings';
 import speedSettingsReducer from './speedSettings';
+import unitsReducer from './units';
 import logger from 'redux-logger';
 
 const rootReducer = combineReducers ({
   session: sessionReducer,
   temperatureSettings: temperatureSettingsReducer,
   speedSettings: speedSettingsReducer,
+  units: unitsReducer
 });
 
 

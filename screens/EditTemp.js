@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Text, View, Pressable, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
-import { convertCtoF, convertFtoC, fetchUnit } from "./Settings";
+import { convertCtoF, convertFtoC } from "./Settings";
 import formatTime, { convertToLocalTime } from "./clock" ;
+import { fetchUnits, getTempUnit } from "../store/units";
 
 
 
@@ -17,17 +18,31 @@ const EditTemp = ({route, navigation}) => {
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const [tempUnit, setTempUnit] = useState('');
+  // const [tempUnit, setTempUnit] = useState('');
+  const tempUnit = useSelector(getTempUnit)[0];
   const [temperature, setTemperature] = useState('');
+
+  // useEffect(() => {
+  //   const tabClick = navigation.addListener('tabPress', (e) => {
+  //     // Prevent default behavior
+  //     e.preventDefault();
+  //     navigation.push( 'Edit Setting', { screen: 'Edit Temp' })
+  //     alert('Default behavior prevented');
+  //     // Do something manually
+  //     // ...
+  //   });
+  // }, [navigation])
 
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit('A');
-      setTempUnit(unit[0]);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit('A');
+    //   setTempUnit(unit[0]);
+    // }
 
-    setUnit();
+    // setUnit();
+
+    dispatch(fetchUnits());
 
   }, []);
 

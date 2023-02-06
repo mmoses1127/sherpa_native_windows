@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { getCurrentUser } from "../store/session";
-import { View, Button, Text, Pressable } from "react-native";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { View, Text, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserType } from "../store/session";
+import { fetchUnits, getSpeedUnit, getTempUnit, updateSpeedUnit, updateTempUnit } from "../store/units"; 
 
 
 
@@ -44,21 +44,38 @@ export const fetchUnit = async (userType) => {
   }
 };
 
-const Settings = ( { navigation } ) => {
+const Settings = ( { navigation, route } ) => {
 
+
+  const dispatch = useDispatch();
   const userType = useSelector(getUserType)
+  console.log(route)
+  // const [tempUnit, setTempUnit] = useState('Fahrenheit');
+  // const [speedUnit, setSpeedUnit] = useState('Numbers');
+  const tempUnit = useSelector(getTempUnit);
+  const speedUnit = useSelector(getSpeedUnit);
 
-  const [tempUnit, setTempUnit] = useState('Fahrenheit');
-  const [speedUnit, setSpeedUnit] = useState('Numbers');
+  // useEffect(() => {
+  //   const tabClick = navigation.addListener('tabPress', (e) => {
+  //     // Prevent default behavior
+  //     e.preventDefault();
+  //     navigation.push('Edit Setting', { screen: 'Settings' })
+  //     alert('Default behavior prevented');
+  //     // Do something manually
+  //     // ...
+  //   });
+  // }, [navigation])
 
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit(userType);
-      userType === 'A' ? setTempUnit(unit) : setSpeedUnit(unit);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit(userType);
+    //   userType === 'A' ? setTempUnit(unit) : setSpeedUnit(unit);
+    // }
 
-    setUnit();
+    // setUnit();
+
+    dispatch(fetchUnits())
 
   }, [userType]);
   
@@ -68,10 +85,12 @@ const Settings = ( { navigation } ) => {
   
   const handleSave = async () => {
     if (userType === 'A') {
-      await AsyncStorage.setItem('tempUnit', tempUnit);
+      // await AsyncStorage.setItem('tempUnit', tempUnit);
+      dispatch(updateTempUnit(tempUnit))
       console.log('tempunit stored as', tempUnit)
     } else {
-      await AsyncStorage.setItem('speedUnit', speedUnit);
+      // await AsyncStorage.setItem('speedUnit', speedUnit);
+      dispatch(updateSpeedUnit(speedUnit))
     }
     navigation.push('Dashboard')
   };
@@ -79,10 +98,12 @@ const Settings = ( { navigation } ) => {
   const saveUnit = async (unit) => {
     if (userType === 'A') {
       // await AsyncStorage.setItem('tempUnit', unit);
-      setTempUnit(unit);
+      // setTempUnit(unit);
+      dispatch(updateTempUnit(unit));
     } else {
       // await AsyncStorage.setItem('speedUnit', unit);
-      setSpeedUnit(unit);
+      dispatch(updateSpeedUnit(unit));
+      // setSpeedUnit(unit);
     }
   };
 
@@ -121,7 +142,7 @@ const Settings = ( { navigation } ) => {
 
           <View className=" w-1/2 flex flex-row justify-evenly items-center m-4">
             {/* <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" /> */}
-            <Button title="Save" onPress={handleSave} className="m-3  min-w-[100px] h-12"/>
+            {/* <Button title="Save" onPress={handleSave} className="m-3  min-w-[100px] h-12"/> */}
           </View>
         </View>
       </View>

@@ -96,9 +96,9 @@ const App = () => {
         {user ? (
         <>
           <Stack.Screen name="Dashboard" component={Dashboard} />
-          <Stack.Screen name="AddSetting" component={AddSetting}/>
-          <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name="EditSetting" component={EditSetting} />
+          <Stack.Screen name="Add Setting" component={AddSetting}/>
+          {/* <Stack.Screen name="Settings" component={Settings} /> */}
+          <Stack.Screen name="Edit Setting" component={EditSetting} />
         </>
         ) : (
         <Stack.Screen name="Login" component={Login} />

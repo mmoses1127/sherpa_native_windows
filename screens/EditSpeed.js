@@ -6,30 +6,36 @@ import { Button, Text, View, Pressable, TextInput } from "react-native";
 import { getSpeedSetting, fetchSpeedSetting, updateSpeedSetting } from "../store/speedSettings";
 import { Slider } from '@miblanchard/react-native-slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
+import { getSpeedUnit, fetchUnits } from "../store/units";
 
 
 
-const EditSpeed = ({route, navigation}) => {
+const EditSpeed = ({route}) => {
 
   const speedItemId = route.params.itemId;
   console.log('speedItemId', speedItemId)
   const speedSetting = useSelector(getSpeedSetting(speedItemId));
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const [speedUnit, setSpeedUnit] = useState('Labels');
+  // const [speedUnit, setSpeedUnit] = useState('Labels');
+  const speedUnit = useSelector(getSpeedUnit);
   const [speed, setSpeed] = useState('');
 
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit('B');
-      setSpeedUnit(unit);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit('B');
+    //   setSpeedUnit(unit);
+    // }
 
-    setUnit();
+    // setUnit();
+
+    dispatch(fetchUnits());
 
   }, []);
 

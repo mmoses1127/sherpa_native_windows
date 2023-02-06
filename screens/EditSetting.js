@@ -1,23 +1,25 @@
 import { useSelector } from "react-redux";
-import { getCurrentUser, getUserType } from "../store/session";
+import { getUserType } from "../store/session";
 import EditTemp from "./EditTemp";
 import EditSpeed from "./EditSpeed";
-import { View } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Settings from "./Settings";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+
+const Tab = createMaterialBottomTabNavigator();
 
 
 
 const EditSetting = ({route}) => {
 
   const userType = useSelector(getUserType);
-  const Tab = createBottomTabNavigator();
   const id = route.params.itemId;
+  
+
 
 
   return (
-      <Tab.Navigator initialRouteName={userType === 'A' ? 'Edit Temp' : 'Edit Speed'}>
+      <Tab.Navigator>
         {userType === 'A' ? <Tab.Screen name="Edit Temp" component={EditTemp} initialParams={{itemId: id}} options={{
           tabBarLabel: 'Edit Item',
           tabBarIcon: () => (

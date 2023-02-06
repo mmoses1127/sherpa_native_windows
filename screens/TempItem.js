@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
+import { fetchUnits, getTempUnit } from "../store/units";
 
 
 const TempItem = ( {temperatureSetting}, props ) => {
@@ -13,17 +14,20 @@ const TempItem = ( {temperatureSetting}, props ) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userType = useSelector(getUserType);
-  const [tempUnit, setTempUnit] = useState('F');
+  // const [tempUnit, setTempUnit] = useState('F');
+  const tempUnit = useSelector(getTempUnit)[0]
   const temp = tempUnit === 'F' ? convertCtoF(temperatureSetting.temperature) : temperatureSetting.temperature;
 
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit(userType);
-      setTempUnit(unit[0]);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit(userType);
+    //   setTempUnit(unit[0]);
+    // }
 
-    setUnit();
+    // setUnit();
+
+    dispatch(fetchUnits())
 
   }, [userType, props]);
 
@@ -34,7 +38,7 @@ const TempItem = ( {temperatureSetting}, props ) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    navigation.navigate('EditSetting', {itemId: temperatureSetting.id});
+    navigation.navigate('Edit Setting', {itemId: temperatureSetting.id});
   };
   
 

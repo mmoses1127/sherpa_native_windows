@@ -1,34 +1,43 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createSpeedSetting } from "../store/speedSettings";
 import { findSpeedLabel, findUnitCookie, fetchUnit } from "./Settings";
-import { Button, TextInput, View, Text, Pressable } from 'react-native';
+import { Button, View, Text, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Slider } from '@miblanchard/react-native-slider';
 import formatTime from "./clock";
-import { useNavigation } from '@react-navigation/native';
+import { getSpeedUnit, fetchUnits } from "../store/units";
 
 
 
-const AddSpeed = () => {
+const AddSpeed = ({ navigation }) => {
 
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [speed, setSpeed] = useState(1);
-  const [speedUnit, setSpeedUnit] = useState('Labels');
+  // const [speedUnit, setSpeedUnit] = useState('Labels');
+  const speedUnit = useSelector(getSpeedUnit);
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
 
+  // useEffect(() => {
+  //   const tabClick = navigation.addListener('tabPress', (e) => {
+  //     e.preventDefault();
+  //     navigation.push( 'Add Setting', { screen: 'Add Speed' })
+  //   });
+  // }, [navigation])
+
   useEffect(() => {
 
-    const setUnit = async () => {
-      let unit = await fetchUnit('B');
-      setSpeedUnit(unit);
-    }
+    // const setUnit = async () => {
+    //   let unit = await fetchUnit('B');
+    //   setSpeedUnit(unit);
+    // }
 
-    setUnit();
+    // setUnit();
+
+    dispatch(fetchUnits())
 
   }, []);
 

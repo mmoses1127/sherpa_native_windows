@@ -1,18 +1,18 @@
 import { useSelector } from "react-redux";
-import { getCurrentUser, getUserType } from "../store/session";
+import { getUserType } from "../store/session";
 import AddTemp from "./AddTemp";
 import AddSpeed from "./AddSpeed";
-import { View } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Settings from "./Settings";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
+const Tab = createMaterialBottomTabNavigator();
 
 
 const AddSetting = () => {
 
   const userType = useSelector(getUserType);
-  const Tab = createBottomTabNavigator();
+  // const Tab = createBottomTabNavigator();
 
 
   return (
