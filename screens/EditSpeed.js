@@ -56,12 +56,12 @@ const EditSpeed = ({route}) => {
       id: speedItemId,
       start_time: startTime,
       end_time: endTime,
-      speed
+      speed: parseInt(speed)
     }
 
     dispatch(updateSpeedSetting(updatedSpeedSetting));
     
-    navigation.navigate('Dashboard');
+    navigation.push('Dashboard');
 
   };
 

@@ -80,7 +80,7 @@ const AddTemp = ({ navigation }) => {
     const newTemperatureSetting = {
       start_time: startTime,
       end_time: endTime,
-      temperature: tempUnit === 'F' ? convertFtoC(temperature) : finalTemp
+      temperature: tempUnit === 'F' ? convertFtoC(temperature) : parseFloat(finalTemp)
     }
 
     dispatch(createTemperatureSetting(newTemperatureSetting));

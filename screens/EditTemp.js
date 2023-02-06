@@ -4,15 +4,18 @@ import { Button, Text, View, Pressable, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getTemperatureSetting, updateTemperatureSetting, fetchTemperatureSetting } from "../store/temperatureSettings";
 import { convertCtoF, convertFtoC } from "./Settings";
-import formatTime, { convertToLocalTime } from "./clock" ;
+import formatTime from "./clock" ;
 import { fetchUnits, getTempUnit } from "../store/units";
+import { useNavigation } from '@react-navigation/native';
 
 
-const EditTemp = ({route, navigation}) => {
+
+const EditTemp = ({route}) => {
 
   const tempItemId = route.params.itemId;
   const tempSetting = useSelector(getTemperatureSetting(tempItemId));
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -88,16 +91,22 @@ const EditTemp = ({route, navigation}) => {
       return;
     }
 
+    let finalTemp = temperature;
+
+    if (temperature[0] === '.') {
+      finalTemp = `0${temperature}`;
+    }
+
     const updatedTemperatureSetting = {
       id: tempItemId,
       start_time: startTime,
       end_time: endTime,
-      temperature: tempUnit === 'F' ? convertFtoC(temperature) : temperature
+      temperature: tempUnit === 'F' ? parseFloat(convertFtoC(parseFloat(temperature))) : parseFloat(finalTemp)
     }
     
     dispatch(updateTemperatureSetting(updatedTemperatureSetting));
     
-    navigation.navigate('Dashboard');
+    navigation.push('Dashboard');
 
   };
 

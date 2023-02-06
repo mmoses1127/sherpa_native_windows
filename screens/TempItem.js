@@ -2,19 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteTemperatureSetting } from "../store/temperatureSettings";
 import { convertCtoF } from "./Settings";
 import { Pressable, Text, View } from 'react-native';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUserType } from "../store/session";
 import { useNavigation } from '@react-navigation/native';
 import { convertToLocalTime } from "./clock";
 import { fetchUnits } from "../store/units";
-
 
 const TempItem = ( {temperatureSetting, tempUnit} ) => {
     
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userType = useSelector(getUserType);
-  const temp = tempUnit === 'F' ? convertCtoF(temperatureSetting.temperature) : temperatureSetting.temperature;
+  const temp = tempUnit === 'Fahrenheit' ? convertCtoF(temperatureSetting.temperature) : temperatureSetting.temperature;
 
   useEffect(() => {
     dispatch(fetchUnits())
