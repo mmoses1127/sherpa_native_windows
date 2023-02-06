@@ -6,6 +6,10 @@ This mobile application application allows has basic authentication (using prote
 for two users who will login to do two different sets of
 controls and set settings intervals for either temperature or fan speed.
 
+# Demo
+
+[Demo Video](https://www.loom.com/share/e88c0db53f5043b18ed7b38eacf7a28b)
+
 # Caveats
 
 - Testing of this application was only done on an Android device. iOS functionality may be limited.
