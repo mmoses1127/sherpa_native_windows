@@ -7,80 +7,50 @@ import { fetchSpeedSettings, getSpeedSettings } from "../store/speedSettings";
 import TempItem from "./TempItem";
 import SpeedItem from "./SpeedItem";
 import { Button } from 'react-native';
-import Navigation from "./Navigation";
+import NavBar from "./NavBar";
 import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SQLite from 'expo-sqlite';
+import { getUserType } from "../store/session";
 
 
-const Dashboard = () => {
-
+const Dashboard = ( {navigation} ) => {
   const db = SQLite.openDatabase('example.db');
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const temperatureSettings = useSelector(getTemperatureSettings);
   const speedSettings = useSelector(getSpeedSettings);
-  const userType = useSelector(getCurrentUser).user_type;
-  // const [userType, setUserType] = useState('A');
-  console.log('hello from dashboard', temperatureSettings);
-  const [temperatureSettings, setTemperatureSettings] = useState([]);
-  // const [temperatureSettings, setTemperatureSettings] = useState([]);
-
-  // useEffect(() => {
-  //   async () => {
-  //     console.log('checking user')
-  //     let type = await AsyncStorage.getItem('userType');
-  //     setUserType(type);
-  //   }
-  // }, []);
+  const userType = useSelector(getUserType);
+  console.log('userType', userType)
+  const temperatureSettings = useSelector(getTemperatureSettings);
 
   useEffect(() => {
     
   if (userType === 'A') {
-    db.transaction(tx => {
-      tx.executeSql(
-        `select * from temperature_settings`,
-        null,
-        (txtObj, resultSet) => {
-          if (resultSet.rows._array.length) {
-            console.log('resultSet', resultSet.rows._array);
-            setTemperatureSettings(resultSet.rows._array);
-          }
-        },
-        (txtObj, error) => {
-          console.log('error', error);
-        }
-        );
-
-      });
-      
-      // if (tempSettings.length) dispatch(addTemperatureSettings(temperatureSettings));
-
-    // let temps = dispatch(sqlFetchTemperatureSettings());
-    // console.log('temps', temps);
-    } else {
-      // dispatch(fetchSpeedSettings());
-    }
+    dispatch(fetchTemperatureSettings());
+  } else {
+    dispatch(fetchSpeedSettings());
+  }
 
   }, [dispatch]);
 
   const handleAdd = (e) => {
     e.preventDefault();
-    navigate('/add-setting');
+    navigation.navigate('AddSetting');
   };
 
   return (
-    <View className="flex flex-col justify-center items-center">
-      <Navigation />
-      <View className="flex flex-col justify-center items-center min-w-[80%]">
-        {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
-        )}
-        
-        {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
-        )}
+    <View className="w-full h-full flex flex-col justify-center items-center">
+      <View className="flex flex-col justify-center items-center">
+        <NavBar />
+        <View className="flex flex-col justify-center items-center min-w-[80%]">
+          {userType === 'A' && temperatureSettings.map(temperatureSetting => <TempItem temperatureSetting={temperatureSetting} key={temperatureSetting.id} />
+          )}
+          
+          {userType === 'B' && speedSettings.map(speedSetting => <SpeedItem speedSetting={speedSetting} key={speedSetting.id} />
+          )}
+        </View>
+        <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
       </View>
-      <Button className="bg-blue m-2 w-1/4 min-w-[75px]" title="Add" onPress={handleAdd} />
     </View>
   );
 }

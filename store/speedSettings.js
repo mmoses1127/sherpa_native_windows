@@ -1,4 +1,7 @@
 import csrfFetch from './csrf.js';
+import * as SQLite from 'expo-sqlite';
+
+const db = SQLite.openDatabase('example.db');
 
 export const ADD_SPEED_SETTINGS = `ADD_SPEED_SETTINGS`;
 export const ADD_SPEED_SETTING = `ADD_SPEED_SETTING`;
@@ -43,65 +46,91 @@ export const getSpeedSetting = speedSettingId => (state) => {
 }
 
 export const fetchSpeedSettings = () => async dispatch => {
-  const res = await fetch(`/api/speed_settings`);
-
-  if (res.ok) {
-    const speedSettings = await res.json();
-    dispatch(addSpeedSettings(speedSettings))
-  };
+  db.transaction(tx => {
+    tx.executeSql(
+      `select * from speed_settings`,
+      null,
+      (txtObj, resultSet) => {
+        if (resultSet.rows._array.length) {
+          let stateSlice = {};
+          resultSet.rows._array.forEach(speedSetting => {
+            stateSlice[speedSetting.id] = speedSetting;
+          });
+          dispatch(addSpeedSettings(stateSlice));
+        } else {
+          console.log('no speed settings found')
+        }
+      },
+      (txtObj, error) => {
+        console.log('error', error);
+      }
+    );
+  });
 };
 
 export const fetchSpeedSetting = (speedSettingId) => async dispatch => {
-  const res = await csrfFetch(`/api/speed_settings/${speedSettingId}`);
-
-  if (res.ok) {
-    const speedSetting = await res.json();
-    dispatch(addSpeedSetting(speedSetting))
-  };
+  db.transaction(tx => {
+    tx.executeSql(
+      `select * from speed_settings where id = ?`,
+      [speedSettingId],
+      (txtObj, resultSet) => {
+        if (resultSet.rows._array.length) {
+          dispatch(addSpeedSetting(resultSet.rows._array[0]))
+        } else {
+          console.log('no speed setting found')
+        }
+      },
+      (txtObj, error) => console.log('error', error)
+    );
+  });
 };
 
 export const deleteSpeedSetting = (speedSettingId) => async dispatch => {
-  const res = await csrfFetch(`/api/speed_settings/${speedSettingId}`, {
-    method: 'DELETE'
+  db.transaction(tx => {
+    tx.executeSql(
+      `delete from speed_settings where id = ?`,
+      [speedSettingId],
+      (txtObj, resultSet) => {
+          dispatch(removeSpeedSetting(speedSettingId))
+          console.log('deleted speed setting number ', speedSettingId)
+      },
+      (txtObj, error) => console.log('error', error)
+    );
   });
-
-  if (res.ok) {
-    dispatch(removeSpeedSetting(speedSettingId))
-  };
 };
 
 export const createSpeedSetting = (speedSetting) => async dispatch => {
-  const res = await csrfFetch(`/api/speed_settings`, {
-    method: 'POST',
-    body: JSON.stringify(speedSetting)
+  speedSetting.start_time = speedSetting.start_time.toISOString();
+  speedSetting.end_time = speedSetting.end_time.toISOString();
+  db.transaction(tx => { 
+    tx.executeSql('INSERT INTO speed_settings (start_time, end_time, speed) values (?, ?, ?)', 
+    [speedSetting.start_time, speedSetting.end_time, speedSetting.speed],
+    (txObj, resultSet) => {
+      dispatch(addSpeedSetting({...speedSetting, id: resultSet.insertId}))
+    },
+    (txObj, error) => {
+      console.log('Error', error);
+    }
+    );
   });
-
-  if (res.ok) {
-    const newSpeedSetting = await res.json();
-    dispatch(addSpeedSetting(newSpeedSetting));
-    return newSpeedSetting;
-  } else {
-    const errors = await res.json();
-    alert(errors);
-    return null;
-  }
 };
 
 export const updateSpeedSetting = (speedSetting) => async dispatch => {
-  const res = await csrfFetch(`/api/speed_settings/${speedSetting.id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(speedSetting)
+  db.transaction(tx => {
+    console.log('updating speed setting', speedSetting)
+    tx.executeSql(
+      `update speed_settings set start_time = ?, end_time = ?, speed = ? where id = ?`,
+      [speedSetting.start_time, speedSetting.end_time, speedSetting.speed, speedSetting.id],
+      (txtObj, resultSet) => {
+        if (resultSet.rowsAffected > 0) {
+          dispatch(addSpeedSetting(speedSetting))
+        } else {
+          console.log('no speed setting found')
+        }
+      },
+      (txtObj, error) => console.log('error', error)
+    );
   });
-
-  if (res.ok) {
-    const updatedSpeedSetting = await res.json();
-    dispatch(addSpeedSetting(updatedSpeedSetting));
-    return updatedSpeedSetting;
-  } else {
-    const errors = await res.json();
-    alert(errors)
-    return null;
-  }
 };
 
 const speedSettingsReducer = (state = {}, action) => {

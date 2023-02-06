@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../store/session";
 import { View, Button, Text, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserType } from "../store/session";
 
-const userType = useSelector(getCurrentUser).user_type;
+
 
 export const convertCtoF = (temp) => {
   return Math.round(((temp * 9/5) + 32) * 10) / 10;
@@ -29,87 +29,103 @@ export const findSpeedLabel = (speedNumber) => {
   }
 }
 
-export const getUnit = async (userType, setTempUnit, setSpeedUnit) => {
+export const fetchUnit = async (userType) => {
+  let unit;
   if (userType === 'A') {
-    let unit = await AsyncStorage.getItem('tempUnit');
+    unit = await AsyncStorage.getItem('tempUnit');
     if (unit) {
-      setTempUnit(unit);
+      return unit ? unit : 'Fahrenheit';
     }
   } else {
-    let unit = await AsyncStorage.getItem('speedUnit');
+    unit = await AsyncStorage.getItem('speedUnit');
     if (unit) {
-      setSpeedUnit(unit);
+      return unit ? unit : 'Numbers';
     }
   }
 };
 
-const Settings = () => {
+const Settings = ( { navigation } ) => {
 
-  const navigate = useNavigate();
-  // const userType = useSelector(getCurrentUser).userType;
-  const userType = 'A';
+  const userType = useSelector(getUserType)
 
   const [tempUnit, setTempUnit] = useState('Fahrenheit');
   const [speedUnit, setSpeedUnit] = useState('Numbers');
 
   useEffect(() => {
-    getUnit(userType, setTempUnit, setSpeedUnit);
-  }, []);
+
+    const setUnit = async () => {
+      let unit = await fetchUnit(userType);
+      userType === 'A' ? setTempUnit(unit) : setSpeedUnit(unit);
+    }
+
+    setUnit();
+
+  }, [userType]);
   
   const handleCancel = (e) => {
-    navigate('/dashboard')
+    navigation.navigate('Dashboard')
   };
   
   const handleSave = async () => {
     if (userType === 'A') {
       await AsyncStorage.setItem('tempUnit', tempUnit);
-      // let item = await AsyncStorage.getItem('tempUnit');
-      // console.log(item);
-      // document.cookie = `tempUnit=${tempUnit}; path=/; max-age=31536000; SameSite=Lax; Secure;`
     } else {
-      AsyncStorage.setItem('speedUnit', speedUnit);
-      // document.cookie = `speedUnit=${speedUnit}; path=/; max-age=31536000; SameSite=Lax; Secure;`
+      await AsyncStorage.setItem('speedUnit', speedUnit);
     }
-    navigate('/dashboard')
+    // navigation.navigate('Dashboard')
+  };
+
+  const saveUnit = async (unit) => {
+    if (userType === 'A') {
+      await AsyncStorage.setItem('tempUnit', unit);
+      setTempUnit(unit);
+    } else {
+      await AsyncStorage.setItem('speedUnit', unit);
+      setSpeedUnit(unit);
+    }
   };
 
   return (
-    <View className='flex flex-col justify-start items-center w-full'>
-      <Text>{tempUnit}</Text>
-      <Text className='text-xl mb-10'>{userType === 'A' ? 'Select Temperature Units' : 'Select Intensity Display Mode'}</Text>
-      <View className="flex flex-row m-4">
-      <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Fahrenheit')}>
-        <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit X' : 'Fahrenheit' }</Text>
-      </Pressable>
-      <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => setTempUnit('Celcius')}>
-        <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius X' : 'Celcius' }</Text>
-      </Pressable>
-      </View>
-      <View className="h-3/4 flex flex-col items-center justify-between">
 
-        <View className=" w-1/2 flex flex-row justify-evenly items-center m-4">
-          <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" />
-          <Button title="Save" onPress={handleSave} className="m-3  min-w-[100px] h-12"/>
+    <View className="w-full h-full flex flex-col justify-center items-center">
+      <View className='flex flex-col justify-center items-center w-full'>
+        <Text className='text-xl mb-10'>{userType === 'A' ? 'Select Temperature Units' : 'Select Intensity Display Mode'}</Text>
+        <View className="flex flex-row m-4">
+        {userType === 'A' &&
+          <View className="flex flex-row items-center justify-center">
+            <Pressable className={` ${tempUnit === 'Fahrenheit' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Fahrenheit')}>
+              <Text className="text-white text-lg">{tempUnit === 'Fahrenheit' ? 'Fahrenheit \u2713' : 'Fahrenheit' }</Text>
+            </Pressable>
+            <Pressable className={` ${tempUnit === 'Celcius' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Celcius')}>
+              <Text className="text-white text-lg">{tempUnit === 'Celcius' ? 'Celcius \u2713' : 'Celcius' }</Text>
+            </Pressable>
+          </View>
+        }
+
+        {userType === 'B' &&
+          <View className="flex flex-row items-center justify-center">
+            <Pressable className={` ${speedUnit === 'Labels' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Labels')}>
+              <Text className="text-white text-lg">{speedUnit === 'Labels' ? 'Labels \u2713' : 'Labels' }</Text>
+            </Pressable>
+            <Pressable className={` ${speedUnit === 'Numbers' ? "flex flex-row justify-center items-center min-w-[110px] bg-blue-500 h-12" : "flex flex-row justify-center items-center min-w-[110px] bg-gray-200 h-12"}`} onPress={e => saveUnit('Numbers')}>
+              <Text className="text-white text-lg">{speedUnit === 'Numbers' ? 'Numbers \u2713' : 'Numbers' }</Text>
+            </Pressable>
+          </View>
+        }
+
+        </View>
+        <View className="flex flex-col items-center justify-between">
+
+          <View className=" w-1/2 flex flex-row justify-evenly items-center m-4">
+            {/* <Button title="Cancel" onPress={handleCancel} className="m-3 bg-slate-200 text-black  min-w-[100px] h-12" /> */}
+            <Button title="Save" onPress={handleSave} className="m-3  min-w-[100px] h-12"/>
+          </View>
         </View>
       </View>
     </View>
+
   )
   
 }
 
 export default Settings;
-
-
-// {userType === 'A' &&
-// <View className="mb-10">
-// <Button id="farhenheit-button" className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Fahrenheit </Button>
-// <Button id="celcius-button"className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Celcius</Button>
-// </View>
-// }
-
-// {userType === 'B' &&
-// <View className="mb-10">
-// <Button id="numbers-button" className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Numbers</Button>
-// <Button id="labels-button"className='bg-slate-200 text-black min-w-[150px] h-12' onClick={handleSelect}>Labels</Button>
-// </View>
-// }

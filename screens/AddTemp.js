@@ -1,35 +1,37 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { createTemperatureSetting, addTemperatureSetting, sqlFetchTemperatureSettings } from "../store/temperatureSettings";
-import { convertFtoC, findUnitCookie } from "./Settings";
+import { createTemperatureSetting, addTemperatureSetting } from "../store/temperatureSettings";
+import { convertFtoC, fetchUnit } from "./Settings";
 import { Button, TextInput, View, Text, Pressable } from 'react-native';
 import { getUnit } from "./Settings";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import formatTime from "./clock" ;
 import * as SQLite from 'expo-sqlite';
+import { useNavigation } from '@react-navigation/native';
+
 
 
 const AddTemp = () => {
 
-  const db = SQLite.openDatabase('example.db');
-  console.log('db in addtemp is', db)
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [startTime, setStartTime] = useState(new Date('July 1, 1999, 12:00:00'));
-  const [endTime, setEndTime] = useState(new Date('July 1, 1999, 12:00:00'));
+  const navigation = useNavigation();
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [tempUnit, setTempUnit] = useState('');
   const [temperature, setTemperature] = useState('');
-  // const unit = findUnitCookie('temp').slice(0,1);
-  // const [showPicker1, setShowPicker1] = useState(false);
-  // const [showPicker2, setShowPicker2] = useState(false);
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('start');
-  const userType = 'A';
+  console.log('addtemp mounted')
 
   useEffect(() => {
-    // setTempUnit(getUnit(userType)[0]);
-    setTempUnit('F');
+
+    const setUnit = async () => {
+      let unit = await fetchUnit('A');
+      setTempUnit(unit[0]);
+    }
+
+    setUnit();
+
   }, []);
 
   useEffect(() => {
@@ -40,6 +42,16 @@ const AddTemp = () => {
       if (temperature > 100) setTemperature(100);
     }
   }, [temperature, tempUnit]);
+
+  const formatTempInput = (temperature) => {
+    let splitTemp = temperature.split('.');
+    if (splitTemp.length > 2 || temperature.includes(',')) {
+      setTemperature(temperature.slice(0, temperature.length - 1));
+    } else {
+      setTemperature(temperature);
+    }
+  };
+
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -70,42 +82,9 @@ const AddTemp = () => {
       temperature: tempUnit === 'F' ? convertFtoC(temperature) : temperature
     }
 
-    // dispatch a transaction to insert to db
-
-    db.transaction(tx => { 
-      tx.executeSql('INSERT INTO temperature_settings (start_time, end_time, temperature) values (?, ?, ?)', 
-      [newTemperatureSetting.start_time, newTemperatureSetting.end_time, newTemperatureSetting.temperature],
-      (txObj, resultSet) => {
-        console.log('resultobject', {...newTemperatureSetting, id: resultSet.insertId});
-        // dispatch(addTemperatureSetting({...newTemperatureSetting, id: resultSet.insertId}))
-      },
-      (txObj, error) => {
-        console.log('Error', error);
-      }
-      );
-    });
-
-    // db.transaction(tx => {
-    //   console.log('selecting temp items...')
-    //   tx.executeSql('SELECT * FROM temperature_settings', null,
-    //     (txObj, resultSet) => {
-    //       console.log('all temps', resultSet.rows._array)
-    //     },
-    //     (txObj, error) => console.log(error)
-    //   );
-    // });
-
-    navigate('/')
-
-    // dispatch action to add to state
-
-
-    // const newItem = dispatch(createTemperatureSetting(newTemperatureSetting));
-    // if (newItem) {
-    //   navigate('/');
-    // } else {
-    //   alert('Item could not be created')
-    // }
+    dispatch(createTemperatureSetting(newTemperatureSetting));
+    navigation.navigate('Dashboard')
+    
   }
 
   const showClock = (currentMode) => {
@@ -122,32 +101,36 @@ const AddTemp = () => {
 
   return (
 
-    <View className="flex flex-col justify-center items-center">
-      <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
-        <View className="flex flex-row items-center justify-start w-full">
-          <Text className="min-w-[120px]">Start</Text>
-          <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('start')} >
-            <Text className="text-white">{formatTime(startTime)}</Text>
-          </Pressable>
+    <View className="w-full h-full flex flex-col justify-center items-center">
+      <Text>ADDTEMP</Text>
+      <View className="flex flex-col justify-center items-center">
+        <View className="flex flex-col align-between justify-center w-full bg-cyan-200 min-h-[300px] p-8 mb-5">
+          <View className="flex flex-row items-center justify-start w-full">
+            <Text className="min-w-[120px]">Start</Text>
+            <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 h-10" onPress={() => showClock('start')} >
+              <Text className="text-white">{startTime === '' ? startTime : formatTime(startTime)}</Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row items-center text-white justify-start w-full">
+            <Text className="min-w-[120px]">End</Text>
+            <Pressable className="flex flex-row items-center justify-center bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
+              <Text className="text-white">{endTime === '' ? endTime : formatTime(endTime)}</Text>
+            </Pressable>
+          </View>
+          <View className="flex flex-row items-center justify-start w-full">
+            <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
+            <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' maxLength={5} onChangeText={text => formatTempInput(text)} value={temperature} />
+          </View>
         </View>
-        <View className="flex flex-row items-center text-white justify-start w-full">
-          <Text className="min-w-[120px]">End</Text>
-          <Pressable className="bg-blue-500 min-w-[80px] m-5 p-2 text-center h-10" onPress={() => showClock('end')} >
-            <Text className="text-white">{formatTime(endTime)}</Text>
-          </Pressable>
-        </View>
-        <View className="flex flex-row items-center justify-start w-full">
-          <Text className="min-w-[120px]">Temperature ({tempUnit})</Text>
-          <TextInput className="bg-blue-500 min-w-[80px] m-5 p-2 text-center text-white h-10" keyboardType='numeric' onChangeText={text => setTemperature(text)} value={temperature} />
-        </View>
-      </View>
 
-      <Button  title="Save" onPress={handleSave} />
-      {show && 
-      <DateTimePicker testID="dateTimePicker" value={startTime} mode={'time'}
-      is24Hour={false} display="default" onChange={handleClockChange} />
-      }
+        <Button  title="Save" onPress={handleSave} />
+        {show && 
+        <DateTimePicker testID="dateTimePicker" value={new Date()} mode={'time'}
+        is24Hour={false} display="default" onChange={handleClockChange} />
+        }
+      </View>
     </View>
+    
   );
 
 }

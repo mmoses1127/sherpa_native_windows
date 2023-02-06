@@ -1,8 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import csrfFetch from './csrf.js';
+import * as SQLite from 'expo-sqlite';
+
+const db = SQLite.openDatabase('example.db');
 
 const ADD_CURRENT_USER = 'ADD_CURRENT_USER';
 const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
+
 
 export const getCurrentUser = (state = {}) => {
   if (state.session && state.session.user) {
@@ -12,40 +16,38 @@ export const getCurrentUser = (state = {}) => {
   }
 }
 
-// Sign up function in case it is needed later:
-
-// export const signup = inputs => async dispatch => {
-//   let {email, name, password} = inputs;
-//   let res = await csrfFetch('/api/users', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       email,
-//       name,
-//       password
-//     })
-//   })
-//   let data = await res.json();
-//   storeCurrentUser(data);
-//   dispatch(addCurrentUser(data));
-// };
-
-export const sqlLogout = () => {
-  console.log('inside sqlLogout')
-  // storeCurrentUser(null);
-  // dispatch(removeCurrentUser());
-
+export const getUserType = (state = {}) => {
+  if (state.session && state.session.user) {
+    return state.session.user.user_type;
+  } else {
+    return null;
+  }
 };
 
-export const logout = () => async dispatch => {
-  const res = await csrfFetch(`/api/session`, {
-    method: 'DELETE'
-  });
+export const sqlLogin = (user) => async (dispatch) => {
+  const { email, password } = user;
 
-  if (res.ok) {
-    storeCurrentUser(null);
-    dispatch(removeCurrentUser());
-    return res;
-  }
+  db.transaction(tx => {
+      tx.executeSql('SELECT * FROM users WHERE email = ? AND password = ?', [email, password],
+        (txObj, resultSet) => {
+          let data = resultSet.rows._array;
+          if (data.length) {
+            const targetUser = data[0]
+            const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            storeCurrentUser(targetUser, sessionToken);
+            dispatch(addCurrentUser(targetUser));
+          } else {
+            alert('incorrect email or password')
+          }
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
+  };
+
+export const logout = () => async dispatch => {
+  storeCurrentUser(null, null);
+  dispatch(removeCurrentUser());;
 }
 
 export const addCurrentUser = (user) => {
@@ -61,55 +63,61 @@ export const removeCurrentUser = () => {
   });
 };
 
-// export const restoreSession = () => async dispatch => {
-//   let res = await csrfFetch('/api/session');
-//   storeCSRFToken(res);
-//   let data = await res.json();
-//   storeCurrentUser(data.user);
-//   dispatch(addCurrentUser(data.user));
-//   return res;
-// }
+export const findUserByToken = (token) => async dispatch => {
+  const user = await db.transaction(tx => {
+    db.executeSql('SELECT * FROM users WHERE session_token = ? AND session_token IS NOT NULL', [token],
+      (txObj, resultSet) => {
+        let data = resultSet.rows._array;
+        if (data.length) {
+          targetUser = data[0];
+          return user;
+        } else {
+          return null;
+        }
+      },
+      (txObj, error) => console.log(error)
+    );
+  });
+}
 
-export const storeCurrentUser = async (user) => {
+
+export const restoreSession = () => async dispatch => {
+  // Search for the token in storage
+    const token = await AsyncStorage.getItem("sessionToken");
+  // search for a user with given token
+    const user = await findUserByToken(token);
+
+  // if token is found, log the user in
+    if (user) {
+      storeCurrentUser(user, token);
+      dispatch(addCurrentUser(user)); 
+    }
+}
+
+export const storeCurrentUser = async (user, sessionToken) => {
   if (user) {
-    await AsyncStorage.setItem('currentUser', JSON.stringify(user));
+    await AsyncStorage.setItem('sessionToken', sessionToken);
+    db.transaction(tx => {
+      tx.executeSql('UPDATE users SET session_token = ? WHERE id = ?', [sessionToken, user.id], 
+        (txObj, resultSet) => {
+          console.log('updated user with session token')
+          },
+        (txObj, error) => console.log(error)
+      );
+    });
+
   } else {
-    await AsyncStorage.removeItem("currentUser");
+    await AsyncStorage.removeItem("sessionToken");
   }
 };
 
-// export const storeCSRFToken = async (res) => {
-//   const token = res.headers.get('X-CSRF-Token');
-//   if (token) await AsyncStorage.setItem('X-CSRF-Token', token);
-// };
-
-// export const login = (user) => async (dispatch) => {
-//   const { email, password } = user;
-//   let res = await csrfFetch('/api/session', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       email,
-//       password
-//     })
-//   });
-//   if (res.ok) {
-//     let data = await res.json();
-//     storeCurrentUser(data)
-//     dispatch(addCurrentUser(data));
-//     return res;
-//   } else {
-//     return ({error: 'We are unable to log you in. Please try again. If the problem persists, contact an administrator.'})
-//   }
-// }
-
-
-
+let user;
 let initialState = {};
 
 const fixUser = async () => {
-  let user = await AsyncStorage.getItem("currentUser");
-  initialState = { 'user': user};
-  console.log(initialState)
+  let token = await AsyncStorage.getItem("sessionToken");
+  user = await findUserByToken(token);
+  initialState = { user: user};
 }
 
 fixUser();

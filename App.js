@@ -6,128 +6,107 @@ import Login from './screens/Login';
 import Dashboard from './screens/Dashboard';
 import AddSetting from './screens/AddSetting';
 import Settings from './screens/Settings';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditSetting from './screens/EditSetting';
 import { useSelector } from 'react-redux';
 import * as SQLite from 'expo-sqlite';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { getCurrentUser } from './store/session';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
 const App = () => {
 
   const db = SQLite.openDatabase('example.db');
-  console.log('db in app is', db)
   const [isLoading, setIsLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  const user = useSelector(getCurrentUser)
+  const user = useSelector(getCurrentUser);
+  const Tab = createBottomTabNavigator();
 
-  const state = useSelector(state => state);
-  console.log('state', state)
-
-  const exportDB = async () => {
-    await Sharing.shareAsync(FileSystem.documentDirectory + 'SQLite/example.db');
-  };
-
-  const importDb = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      copyTocacheDirectory: true
-    });
-
-    if (result.type === 'success') {
-      setIsLoading(true);
-
-      if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
-      }
-
-      const base64 = await FileSystem.readAsStringAsync(
-        result.uri, 
-        { encoding: FileSystem.EncodingType.Base64 } 
-      );
-
-      await FileSystem.writeAsStringAsync(FileSystem.documentDirectory 
-        + 'SQLite/example.db', 
-        base64, 
-        { encoding: FileSystem.EncodingType.Base64 
-        }
-      );
-
-      await db.closeAsync();
-      setDb(SQLite.openDatabase('example.db'));
-    }
-  };
 
   useEffect(() => {
     console.log('loading db', db)
     db.transaction(tx => {
-      console.log('creating table...')
-      tx.executeSql('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, user_type TEXT)');
+      // console.log('dropping tables...')
+      // tx.executeSql('DROP TABLE IF EXISTS users');
+      // tx.executeSql('DROP TABLE IF EXISTS temperature_settings');
+      // tx.executeSql('DROP TABLE IF EXISTS speed_settings');
+      console.log('creating tables if not exist...')
+      tx.executeSql('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT, user_type TEXT, session_token TEXT)');
       tx.executeSql('CREATE TABLE IF NOT EXISTS temperature_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, temperature INTEGER)');
+      tx.executeSql('CREATE TABLE IF NOT EXISTS speed_settings (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TIME, end_time TIME, speed INTEGER)');
     });
 
+    
+    
     db.transaction(tx => {
-      console.log('adding user a...')
-      tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['a@test.io', 'password', 'A'],
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
+      console.log('checking users...')
+      tx.executeSql('SELECT * FROM users WHERE email = ? OR email = ?', ["a@test.io", "b@test.io"],
+      (txObj, resultSet) => {
+        if (resultSet.rows._array.length < 2) {
+          console.log('populating users...');
+          
+          db.transaction(tx => {
+            console.log('adding user A...')
+            tx.executeSql('INSERT INTO users (email, password, user_type, session_token) values (?, ?, ?, ?)', ['a@test.io', 'password', 'A', null],
+            (txObj, resultSet) => {
+              console.log('added user B');
+            },
+            (txObj, error) => console.log(error)
+            );
+          });
+
+          db.transaction(tx => {
+              console.log('adding user B...')
+              tx.executeSql('INSERT INTO users (email, password, user_type, session_token) values (?, ?, ?, ?)', ['b@test.io', 'password', 'B', null],
+                (txObj, resultSet) => {
+                    console.log('added user B');
+                  },
+                  (txObj, error) => console.log(error)
+            );
+          });
+        }
+      },
+      (txObj, error) => console.log(error)
       );
     });
 
-    db.transaction(tx => {
-      console.log('adding user b...')
-      tx.executeSql('INSERT INTO users (email, password, user_type) values (?, ?, ?)', ['b@test.io', 'password', 'B'],
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
-
-    db.transaction(tx => {
-      console.log('selecting users...')
-      tx.executeSql('SELECT * FROM users', null,
-        (txObj, resultSet) => {
-          console.log(resultSet.rows._array)
-          setUsers(resultSet.rows._array)
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
-
+    console.log('DB loading complete!')
     setIsLoading(false);
 
   }, []);
 
-
-  const showUsers = () => {
-    return users.map((user, index) => {
-      return (
-        <Text key={index}>{user.email}</Text>
-      )
-    })
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    )
   }
 
+  const Stack = createNativeStackNavigator();
+
+  
+
   return (
-    <NativeRouter>
-      <View style={styles.container}>
-        <Button title="Export DB" onPress={exportDB} />
-        <Button title="Import DB" onPress={importDb} />
-        <Routes>
-          <Route exact path="/" element={user ? <Dashboard /> : <Login />} />
-          <Route exact path="/dashboard" element={user ? <Dashboard /> : <Login />} />
-          <Route exact path="/add-setting" element={user ? <AddSetting db={db}/> : <Login />} />
-          {/* <Route exact path="/temps/:tempItemId" element={0 ? <Login /> : <EditTemp />} /> */}
-          {/* <Route exact path="/speeds/:speedItemId" element={0 ? <Login /> : <EditSpeed />} /> */}
-          <Route exact path="/settings" element={user ? <Settings /> : <Login />} />
-        </Routes>
-      </View>
-    </NativeRouter>
-  );
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Dashboard'>
+        {user ? (
+        <>
+          <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="AddSetting" component={AddSetting}/>
+          <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name="EditSetting" component={EditSetting} />
+        </>
+        ) : (
+        <Stack.Screen name="Login" component={Login} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
+
 }
 
 const styles = StyleSheet.create({
