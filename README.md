@@ -1,4 +1,4 @@
-# README: Sherpa React Native test
+# README: Sherpa React Native Test
 
 # Overview
 
