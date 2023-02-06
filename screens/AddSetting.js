@@ -17,7 +17,7 @@ const AddSetting = () => {
 
   return (
 
-      <Tab.Navigator>
+      <Tab.Navigator initialRouteName='Settings'>
         {userType === 'A' ? <Tab.Screen name="Add Temp" component={AddTemp} options={{
           tabBarLabel: 'Add Item',
           tabBarIcon: () => (
@@ -33,9 +33,10 @@ const AddSetting = () => {
         }}
         />
         }
+
         
         <Tab.Screen name="Settings" component={Settings} options={{
-          tabBarLabel: 'Settings',
+          tabBarLabel: 'AddTemp',
           tabBarIcon: () => (
             <Icon name='gear' size={30} color='blue' />
           ),
